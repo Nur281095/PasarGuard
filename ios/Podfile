@@ -1,0 +1,98 @@
+# Uncomment this line to define a global platform for your project
+platform :ios, '14.0.0'
+
+# CocoaPods analytics sends network stats synchronously affecting flutter build latency.
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
+
+project 'Runner', {
+  'Debug' => :debug,
+  'Profile' => :release,
+  'Release' => :release,
+}
+
+def flutter_root
+  generated_xcode_build_settings_path = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'), __FILE__)
+  unless File.exist?(generated_xcode_build_settings_path)
+    raise "#{generated_xcode_build_settings_path} must exist. If you're running pod install manually, make sure flutter pub get is executed first"
+  end
+
+  File.foreach(generated_xcode_build_settings_path) do |line|
+    matches = line.match(/FLUTTER_ROOT\=(.*)/)
+    return matches[1].strip if matches
+  end
+  raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig, then run flutter pub get"
+end
+
+require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
+
+flutter_ios_podfile_setup
+
+target 'Runner' do
+  use_frameworks! :linkage => :static
+  use_modular_headers!
+
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      config.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
+      
+    end
+  end
+  
+  # Fix for Square In-App Payments SDK - Add setup script for CorePaymentCard framework
+  # This script must run AFTER the Embed Pods Frameworks phase
+  project_path = 'Runner.xcodeproj'
+  project = Xcodeproj::Project.open(project_path)
+  
+  project.targets.each do |target|
+    if target.name == 'Runner'
+      # Remove existing Square SDK Setup script if present
+      target.build_phases.delete_if do |phase|
+        phase.is_a?(Xcodeproj::Project::Object::PBXShellScriptBuildPhase) && 
+        phase.name == 'Square SDK Setup'
+      end
+      
+      # Add the Square SDK setup script
+      square_script_phase = target.new_shell_script_build_phase('Square SDK Setup')
+      square_script_phase.shell_script = <<-SCRIPT
+FRAMEWORKS="${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}"
+
+# Square In-App Payments SDK setup
+if [ -f "${FRAMEWORKS}/SquareInAppPaymentsSDK.framework/setup" ]; then
+  echo "Running SquareInAppPaymentsSDK setup..."
+  "${FRAMEWORKS}/SquareInAppPaymentsSDK.framework/setup" || echo "Warning: SquareInAppPaymentsSDK setup failed"
+else
+  echo "Warning: SquareInAppPaymentsSDK setup script not found"
+fi
+
+# Square Buyer Verification (3DS) SDK setup
+if [ -f "${FRAMEWORKS}/SquareBuyerVerificationSDK.framework/setup" ]; then
+  echo "Running SquareBuyerVerificationSDK setup..."
+  "${FRAMEWORKS}/SquareBuyerVerificationSDK.framework/setup" || echo "Warning: SquareBuyerVerificationSDK setup failed"
+else
+  echo "Warning: SquareBuyerVerificationSDK setup script not found"
+fi
+
+exit 0
+      SCRIPT
+      
+      # Move script to run AFTER the Embed Pods Frameworks phase
+      embed_phase_index = target.build_phases.index do |phase|
+        phase.is_a?(Xcodeproj::Project::Object::PBXShellScriptBuildPhase) && 
+        (phase.name.include?('Embed Pods Frameworks') || phase.name.include?('[CP] Embed Pods Frameworks'))
+      end
+      
+      if embed_phase_index
+        # Remove from current position and insert after embed phase
+        target.build_phases.delete(square_script_phase)
+        target.build_phases.insert(embed_phase_index + 1, square_script_phase)
+      end
+    end
+  end
+  
+  project.save
+end
