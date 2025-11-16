@@ -109,6 +109,31 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
     }
   }
 
+  void _showSnackBar({
+    required ScaffoldMessengerState? messenger,
+    required Color backgroundColor,
+    required Color textColor,
+    required String message,
+    Duration duration = const Duration(milliseconds: 4000),
+  }) {
+    if (messenger == null) {
+      return;
+    }
+
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(
+            color: textColor,
+          ),
+        ),
+        duration: duration,
+        backgroundColor: backgroundColor,
+      ),
+    );
+  }
+
   // --- Image URL resolver for cart item ---
   // If image URL has any space, it will be replaced with %20
   String _cartItemImageUrl(dynamic item) {
@@ -249,6 +274,11 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
 
       if (!mounted) return;
 
+      final messenger = ScaffoldMessenger.maybeOf(context);
+      final theme = FlutterFlowTheme.of(context);
+      final snackTextColor = theme.primaryText;
+      final snackBackgroundColor = theme.secondary;
+
       setState(() {
         _isLoadingCart = true;
       });
@@ -296,19 +326,14 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
             );
         safeSetState(() {});
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              PasargadrugsGroup.getCartCall.message(
+        _showSnackBar(
+          messenger: messenger,
+          backgroundColor: snackBackgroundColor,
+          textColor: snackTextColor,
+          message: PasargadrugsGroup.getCartCall.message(
                 (_model.cartxyz?.jsonBody ?? ''),
-              )!,
-              style: TextStyle(
-                color: FlutterFlowTheme.of(context).primaryText,
-              ),
-            ),
-            duration: const Duration(milliseconds: 4000),
-            backgroundColor: FlutterFlowTheme.of(context).secondary,
-          ),
+              ) ??
+              'Failed to load cart.',
         );
       }
 
@@ -769,18 +794,34 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                         Colors.transparent,
                                                         highlightColor:
                                                         Colors.transparent,
-                                                        onTap: () async {
-                                                          if (_itemLoadingStates.containsKey(_itemIdStr(cartItemItem))) {
-                                                            return; // Prevent multiple simultaneous calls
-                                                          }
+                                                      onTap: () async {
+                                                        if (_itemLoadingStates.containsKey(_itemIdStr(cartItemItem))) {
+                                                          return; // Prevent multiple simultaneous calls
+                                                        }
 
-                                                          var _shouldSetState =
-                                                          false;
+                                                        var _shouldSetState =
+                                                        false;
 
-                                                          // Compute safe new quantity
-                                                          final currentQty =
-                                                          _itemQty(
-                                                              cartItemItem);
+                                                        if (!mounted) {
+                                                          return;
+                                                        }
+
+                                                        final messenger =
+                                                            ScaffoldMessenger
+                                                                .maybeOf(
+                                                                    context);
+                                                        final theme =
+                                                            FlutterFlowTheme.of(
+                                                                context);
+                                                        final snackTextColor =
+                                                            theme.primaryText;
+                                                        final snackBackgroundColor =
+                                                            theme.secondary;
+
+                                                        // Compute safe new quantity
+                                                        final currentQty =
+                                                        _itemQty(
+                                                            cartItemItem);
                                                           final newQty =
                                                           (currentQty > 0)
                                                               ? (currentQty -
@@ -811,25 +852,23 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                                 'updateCartCall DEC',
                                                                 _model
                                                                     .decCartResult);
-                                                          } catch (e) {
-                                                            debugPrint('Error in updateCartCall (DEC): $e');
-                                                            if (mounted) {
-                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                SnackBar(
-                                                                  content: Text(
-                                                                    'Failed to update cart. Please try again.',
-                                                                    style: TextStyle(
-                                                                      color: FlutterFlowTheme.of(context).primaryText,
-                                                                    ),
-                                                                  ),
-                                                                  duration: const Duration(milliseconds: 4000),
-                                                                  backgroundColor: FlutterFlowTheme.of(context).secondary,
-                                                                ),
-                                                              );
-                                                            }
-                                                          } finally {
-                                                            if (mounted) {
-                                                              setState(() {
+                                                        } catch (e) {
+                                                          debugPrint('Error in updateCartCall (DEC): $e');
+                                                          if (mounted) {
+                                                            _showSnackBar(
+                                                              messenger:
+                                                                  messenger,
+                                                              backgroundColor:
+                                                                  snackBackgroundColor,
+                                                              textColor:
+                                                                  snackTextColor,
+                                                              message:
+                                                                  'Failed to update cart. Please try again.',
+                                                            );
+                                                          }
+                                                        } finally {
+                                                          if (mounted) {
+                                                            setState(() {
                                                                 _itemLoadingStates.remove(itemId);
                                                               });
                                                             }
@@ -856,35 +895,21 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                             return;
                                                           } else {
                                                             if (mounted) {
-                                                              ScaffoldMessenger
-                                                                  .of(
-                                                                  context)
-                                                                  .showSnackBar(
-                                                                SnackBar(
-                                                                  content: Text(
+                                                              _showSnackBar(
+                                                                messenger:
+                                                                    messenger,
+                                                                backgroundColor:
+                                                                    snackBackgroundColor,
+                                                                textColor:
+                                                                    snackTextColor,
+                                                                message:
                                                                     PasargadrugsGroup
                                                                         .updateCartCall
                                                                         .message(
                                                                       (_model.decCartResult?.jsonBody ??
-                                                                          ''),
+                                                                              ''),
                                                                     ) ??
-                                                                        'Failed to update cart.',
-                                                                    style:
-                                                                    TextStyle(
-                                                                      color: FlutterFlowTheme.of(
-                                                                          context)
-                                                                          .primaryText,
-                                                                    ),
-                                                                  ),
-                                                                  duration:
-                                                                  const Duration(
-                                                                      milliseconds:
-                                                                      4000),
-                                                                  backgroundColor:
-                                                                  FlutterFlowTheme.of(
-                                                                      context)
-                                                                      .secondary,
-                                                                ),
+                                                                    'Failed to update cart.',
                                                               );
                                                             }
                                                           }
@@ -999,17 +1024,33 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                         Colors.transparent,
                                                         highlightColor:
                                                         Colors.transparent,
-                                                        onTap: () async {
-                                                          if (_itemLoadingStates.containsKey(_itemIdStr(cartItemItem))) {
-                                                            return; // Prevent multiple simultaneous calls
-                                                          }
+                                                      onTap: () async {
+                                                        if (_itemLoadingStates.containsKey(_itemIdStr(cartItemItem))) {
+                                                          return; // Prevent multiple simultaneous calls
+                                                        }
 
-                                                          var _shouldSetState =
-                                                          false;
+                                                        var _shouldSetState =
+                                                        false;
 
-                                                          final currentQty =
-                                                          _itemQty(
-                                                              cartItemItem);
+                                                        if (!mounted) {
+                                                          return;
+                                                        }
+
+                                                        final messenger =
+                                                            ScaffoldMessenger
+                                                                .maybeOf(
+                                                                    context);
+                                                        final theme =
+                                                            FlutterFlowTheme.of(
+                                                                context);
+                                                        final snackTextColor =
+                                                            theme.primaryText;
+                                                        final snackBackgroundColor =
+                                                            theme.secondary;
+
+                                                        final currentQty =
+                                                        _itemQty(
+                                                            cartItemItem);
                                                           final newQty =
                                                               currentQty + 1;
                                                           debugPrint(
@@ -1037,25 +1078,23 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                                 'updateCartCall INC',
                                                                 _model
                                                                     .incrementCartResult);
-                                                          } catch (e) {
-                                                            debugPrint('Error in updateCartCall (INC): $e');
-                                                            if (mounted) {
-                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                SnackBar(
-                                                                  content: Text(
-                                                                    'Failed to update cart. Please try again.',
-                                                                    style: TextStyle(
-                                                                      color: FlutterFlowTheme.of(context).primaryText,
-                                                                    ),
-                                                                  ),
-                                                                  duration: const Duration(milliseconds: 4000),
-                                                                  backgroundColor: FlutterFlowTheme.of(context).secondary,
-                                                                ),
-                                                              );
-                                                            }
-                                                          } finally {
-                                                            if (mounted) {
-                                                              setState(() {
+                                                        } catch (e) {
+                                                          debugPrint('Error in updateCartCall (INC): $e');
+                                                          if (mounted) {
+                                                            _showSnackBar(
+                                                              messenger:
+                                                                  messenger,
+                                                              backgroundColor:
+                                                                  snackBackgroundColor,
+                                                              textColor:
+                                                                  snackTextColor,
+                                                              message:
+                                                                  'Failed to update cart. Please try again.',
+                                                            );
+                                                          }
+                                                        } finally {
+                                                          if (mounted) {
+                                                            setState(() {
                                                                 _itemLoadingStates.remove(itemId);
                                                               });
                                                             }
@@ -1082,35 +1121,21 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                             return;
                                                           } else {
                                                             if (mounted) {
-                                                              ScaffoldMessenger
-                                                                  .of(
-                                                                  context)
-                                                                  .showSnackBar(
-                                                                SnackBar(
-                                                                  content: Text(
+                                                              _showSnackBar(
+                                                                messenger:
+                                                                    messenger,
+                                                                backgroundColor:
+                                                                    snackBackgroundColor,
+                                                                textColor:
+                                                                    snackTextColor,
+                                                                message:
                                                                     PasargadrugsGroup
                                                                         .updateCartCall
                                                                         .message(
                                                                       (_model.incrementCartResult?.jsonBody ??
-                                                                          ''),
+                                                                              ''),
                                                                     ) ??
-                                                                        'Failed to update cart.',
-                                                                    style:
-                                                                    TextStyle(
-                                                                      color: FlutterFlowTheme.of(
-                                                                          context)
-                                                                          .primaryText,
-                                                                    ),
-                                                                  ),
-                                                                  duration:
-                                                                  const Duration(
-                                                                      milliseconds:
-                                                                      4000),
-                                                                  backgroundColor:
-                                                                  FlutterFlowTheme.of(
-                                                                      context)
-                                                                      .secondary,
-                                                                ),
+                                                                    'Failed to update cart.',
                                                               );
                                                             }
                                                           }
@@ -1209,6 +1234,21 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
 
                                                       var _shouldSetState =
                                                       false;
+                                                      if (!mounted) {
+                                                        return;
+                                                      }
+
+                                                      final messenger =
+                                                          ScaffoldMessenger
+                                                              .maybeOf(
+                                                                  context);
+                                                      final theme =
+                                                          FlutterFlowTheme.of(
+                                                              context);
+                                                      final snackTextColor =
+                                                          theme.primaryText;
+                                                      final snackBackgroundColor =
+                                                          theme.secondary;
                                                       debugPrint(
                                                           '>>> removeCartCall cartItemId=${_itemIdForRemove(cartItemItem)}');
 
@@ -1234,17 +1274,15 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                       } catch (e) {
                                                         debugPrint('Error in removeCartCall: $e');
                                                         if (mounted) {
-                                                          ScaffoldMessenger.of(context).showSnackBar(
-                                                            SnackBar(
-                                                              content: Text(
+                                                          _showSnackBar(
+                                                            messenger:
+                                                                messenger,
+                                                            backgroundColor:
+                                                                snackBackgroundColor,
+                                                            textColor:
+                                                                snackTextColor,
+                                                            message:
                                                                 'Failed to remove item. Please try again.',
-                                                                style: TextStyle(
-                                                                  color: FlutterFlowTheme.of(context).primaryText,
-                                                                ),
-                                                              ),
-                                                              duration: const Duration(milliseconds: 4000),
-                                                              backgroundColor: FlutterFlowTheme.of(context).secondary,
-                                                            ),
                                                           );
                                                         }
                                                       } finally {
@@ -1273,35 +1311,22 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                         return;
                                                       } else {
                                                         if (mounted) {
-                                                          ScaffoldMessenger.of(
-                                                              context)
-                                                              .showSnackBar(
-                                                            SnackBar(
-                                                              content: Text(
+                                                          _showSnackBar(
+                                                            messenger:
+                                                                messenger,
+                                                            backgroundColor:
+                                                                snackBackgroundColor,
+                                                            textColor:
+                                                                snackTextColor,
+                                                            message:
                                                                 PasargadrugsGroup
                                                                     .removeCartCall
                                                                     .message(
                                                                   (_model.apiResult1ux
-                                                                      ?.jsonBody ??
-                                                                      ''),
+                                                                              ?.jsonBody ??
+                                                                          ''),
                                                                 ) ??
-                                                                    'Failed to remove item.',
-                                                                style:
-                                                                TextStyle(
-                                                                  color: FlutterFlowTheme.of(
-                                                                      context)
-                                                                      .primaryText,
-                                                                ),
-                                                              ),
-                                                              duration:
-                                                              const Duration(
-                                                                  milliseconds:
-                                                                  4000),
-                                                              backgroundColor:
-                                                              FlutterFlowTheme.of(
-                                                                  context)
-                                                                  .secondary,
-                                                            ),
+                                                                'Failed to remove item.',
                                                           );
                                                         }
                                                       }
