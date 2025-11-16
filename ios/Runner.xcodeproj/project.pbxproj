@@ -144,7 +144,7 @@
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				58FC3000FD3CCDCDEC99F3AF /* [CP] Embed Pods Frameworks */,
-				5397634A04ED846D17C67ADA /* Square SDK Setup */,
+				DC48AA43A4871148A7813C2F /* Square SDK Setup */,
 				E011A0A5FB7EF905924ECA12 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -228,24 +228,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		1ED74D760EF4C18028F23002 /* Square SDK Setup */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Square SDK Setup";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "FRAMEWORKS=\"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\n\n# Square In-App Payments SDK setup\nif [ -f \"${FRAMEWORKS}/SquareInAppPaymentsSDK.framework/setup\" ]; then\n  echo \"Running SquareInAppPaymentsSDK setup...\"\n  \"${FRAMEWORKS}/SquareInAppPaymentsSDK.framework/setup\" || echo \"Warning: SquareInAppPaymentsSDK setup failed\"\nelse\n  echo \"Warning: SquareInAppPaymentsSDK setup script not found\"\nfi\n\n# Square Buyer Verification (3DS) SDK setup\nif [ -f \"${FRAMEWORKS}/SquareBuyerVerificationSDK.framework/setup\" ]; then\n  echo \"Running SquareBuyerVerificationSDK setup...\"\n  \"${FRAMEWORKS}/SquareBuyerVerificationSDK.framework/setup\" || echo \"Warning: SquareBuyerVerificationSDK setup failed\"\nelse\n  echo \"Warning: SquareBuyerVerificationSDK setup script not found\"\nfi\n\nexit 0\n";
-		};
 		3B06AD1E1E4923F5004D2608 /* Thin Binary */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -311,6 +293,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+		};
+		DC48AA43A4871148A7813C2F /* Square SDK Setup */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Square SDK Setup";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "FRAMEWORKS=\"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\n\n# Square In-App Payments SDK setup\nif [ -f \"${FRAMEWORKS}/SquareInAppPaymentsSDK.framework/setup\" ]; then\n  echo \"Running SquareInAppPaymentsSDK setup...\"\n  \"${FRAMEWORKS}/SquareInAppPaymentsSDK.framework/setup\" || echo \"Warning: SquareInAppPaymentsSDK setup failed\"\nelse\n  echo \"Warning: SquareInAppPaymentsSDK setup script not found\"\nfi\n\n# Square Buyer Verification (3DS) SDK setup\nif [ -f \"${FRAMEWORKS}/SquareBuyerVerificationSDK.framework/setup\" ]; then\n  echo \"Running SquareBuyerVerificationSDK setup...\"\n  \"${FRAMEWORKS}/SquareBuyerVerificationSDK.framework/setup\" || echo \"Warning: SquareBuyerVerificationSDK setup failed\"\nelse\n  echo \"Warning: SquareBuyerVerificationSDK setup script not found\"\nfi\n\nexit 0\n";
 		};
 		E011A0A5FB7EF905924ECA12 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;

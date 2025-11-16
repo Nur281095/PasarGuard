@@ -21,9 +21,11 @@
   <key>CFBundleVersion</key>
   <string>1.0</string>
   <key>MinimumOSVersion</key>
-  <string>12.0</string>
+  <string>13.0</string>
   <key>FlutterEngine</key>
-  <string>8cd19e509d6bece8ccd74aef027c4ca947363095</string>
+  <string>56f64c26474b70c7bc4d4c8785097499775d59e0</string>
+  <key>BuildMode</key>
+  <string>debug</string>
   <key>ClangVersion</key>
   <string>b'Fuchsia clang version 18.0.0 (https://llvm.googlesource.com/llvm-project 725656bdd885483c39f482a01ea25d67acf39c46)'</string>
 </dict>
