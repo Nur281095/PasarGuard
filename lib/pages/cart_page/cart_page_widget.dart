@@ -15,7 +15,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'cart_page_model.dart';
 export 'cart_page_model.dart';
-import 'dart:convert'; // <-- for jsonEncode in debug logs
+import 'dart:convert';
+import 'dart:async';
+import 'package:flutter/scheduler.dart';
 
 class CartPageWidget extends StatefulWidget {
   const CartPageWidget({super.key});
@@ -38,11 +40,6 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
   // Loading states for individual cart items
   // Key: cart_item_id, Value: loading operation type ('update', 'remove')
   final Map<String, String> _itemLoadingStates = {};
-
-  bool get _isContextAttached {
-    final ctx = context;
-    return mounted && ctx is Element && ctx.attached;
-  }
 
   // --- Helpers: robust JSON → int / String casting ---
   int _asInt(dynamic v, {int fallback = 0}) {
@@ -270,88 +267,10 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
   void initState() {
     super.initState();
     _model = createModel(context, () => CartPageModel());
-
-    // On page load action.
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      if (!mounted) {
-        return;
-      }
-
-      if (FFAppState().cartId == null || FFAppState().cartId == '') {
-        return;
-      }
-
-      if (!_isContextAttached) return;
-
-      final messenger = ScaffoldMessenger.maybeOf(context);
-      final theme = FlutterFlowTheme.of(context);
-      final snackTextColor = theme.primaryText;
-      final snackBackgroundColor = theme.secondary;
-
-      setState(() {
-        _isLoadingCart = true;
-      });
-
-      debugPrint('>>> Calling getCartCall with cartId=${FFAppState().cartId}');
-
-      _model.cartxyz = await PasargadrugsGroup.getCartCall.call(
-        cartId: FFAppState().cartId,
-        token: currentAuthenticationToken,
-      );
-      _logApi('getCartCall', _model.cartxyz);
-
-      if (!_isContextAttached) return;
-
-      if ((_model.cartxyz?.succeeded ?? false)) {
-        _model.cartItems = PasargadrugsGroup.getCartCall
-            .cartItems(
-          (_model.cartxyz?.jsonBody ?? ''),
-        )!
-            .toList()
-            .cast<dynamic>();
-        _model.cartTotal = PasargadrugsGroup.getCartCall.cartTotal(
-          (_model.cartxyz?.jsonBody ?? ''),
-        );
-        _model.cartPromos = PasargadrugsGroup.getCartCall
-            .promos(
-          (_model.cartxyz?.jsonBody ?? ''),
-        )!
-            .toList()
-            .cast<dynamic>();
-        _model.cartDiscount = PasargadrugsGroup.getCartCall
-            .discounts(
-          (_model.cartxyz?.jsonBody ?? ''),
-        )
-            ?.toDouble();
-        _model.cartShipping = PasargadrugsGroup.getCartCall.shippingFee(
-          (_model.cartxyz?.jsonBody ?? ''),
-        );
-        _model.billingAddress = PasargadrugsGroup.getCartCall.billingAddress(
-          (_model.cartxyz?.jsonBody ?? ''),
-        );
-        _model.shippingAddress =
-            PasargadrugsGroup.getCartCall.shippingAddress(
-              (_model.cartxyz?.jsonBody ?? ''),
-            );
-        safeSetState(() {});
-      } else {
-        _showSnackBar(
-          messenger: messenger,
-          backgroundColor: snackBackgroundColor,
-          textColor: snackTextColor,
-          message: PasargadrugsGroup.getCartCall.message(
-                (_model.cartxyz?.jsonBody ?? ''),
-              ) ??
-              'Failed to load cart.',
-        );
-      }
-
-      if (_isContextAttached) {
-        setState(() {
-          _isLoadingCart = false;
-        });
-      }
+    setState(() {
+      _isLoadingCart = true;
     });
+    _scheduleInitialCartLoad();
   }
 
   @override
@@ -403,6 +322,119 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
     _model.isRouteVisible = false;
   }
 
+
+  Future<void> _scheduleInitialCartLoad() async {
+    await Future.delayed(const Duration(milliseconds: 400));
+
+    final completer = Completer<void>();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) {
+        if (!completer.isCompleted) completer.complete();
+        return;
+      }
+
+      // CRITICAL FIX: Cache these values IMMEDIATELY after mounted check
+      // to prevent accessing deactivated widget's ancestor
+      final cartId = FFAppState().cartId;
+      final authToken = currentAuthenticationToken;
+
+      if (cartId == null || cartId == '') {
+        if (!completer.isCompleted) completer.complete();
+        return;
+      }
+
+      if (!mounted) {
+        if (!completer.isCompleted) completer.complete();
+        return;
+      }
+
+      final messenger = ScaffoldMessenger.maybeOf(context);
+      final theme = FlutterFlowTheme.of(context);
+      final snackTextColor = theme.primaryText;
+      final snackBackgroundColor = theme.secondary;
+
+      debugPrint('>>> Calling getCartCall with cartId=$cartId');
+      debugPrint('>>> Calling getCartCall with authToken=$authToken');
+
+      _model.cartxyz = await PasargadrugsGroup.getCartCall.call(
+        cartId: cartId,
+        token: authToken,
+      );
+      _logApi('getCartCall', _model.cartxyz);
+
+      if (!mounted) {
+        if (!completer.isCompleted) completer.complete();
+        return;
+      }
+
+      if ((_model.cartxyz?.succeeded ?? false)) {
+        _model.cartItems = PasargadrugsGroup.getCartCall
+            .cartItems(
+          (_model.cartxyz?.jsonBody ?? ''),
+        )!
+            .toList()
+            .cast<dynamic>();
+
+        _model.cartTotal = PasargadrugsGroup.getCartCall.cartTotal(
+          (_model.cartxyz?.jsonBody ?? ''),
+        );
+
+        _model.cartPromos = PasargadrugsGroup.getCartCall
+            .promos(
+          (_model.cartxyz?.jsonBody ?? ''),
+        )!
+            .toList()
+            .cast<dynamic>();
+
+        _model.cartDiscount = PasargadrugsGroup.getCartCall
+            .discounts(
+          (_model.cartxyz?.jsonBody ?? ''),
+        )
+            ?.toDouble();
+
+        _model.cartShipping = PasargadrugsGroup.getCartCall.shippingFee(
+          (_model.cartxyz?.jsonBody ?? ''),
+        );
+
+        _model.billingAddress =
+            PasargadrugsGroup.getCartCall.billingAddress(
+              (_model.cartxyz?.jsonBody ?? ''),
+            );
+
+        _model.shippingAddress =
+            PasargadrugsGroup.getCartCall.shippingAddress(
+              (_model.cartxyz?.jsonBody ?? ''),
+            );
+
+        safeSetState(() {});
+      } else {
+        _showSnackBar(
+          messenger: messenger,
+          backgroundColor: snackBackgroundColor,
+          textColor: snackTextColor,
+          message: PasargadrugsGroup.getCartCall.message(
+            (_model.cartxyz?.jsonBody ?? ''),
+          ) ??
+              'Failed to load cart.',
+        );
+      }
+
+      if (mounted) {
+        setState(() {
+          _isLoadingCart = false;
+        });
+      }
+
+      if (!completer.isCompleted) {
+        completer.complete();
+      }
+    });
+
+    return completer.future;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     DebugFlutterFlowModelContext.maybeOf(context)
@@ -432,7 +464,8 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
               size: 30.0,
             ),
             onPressed: () async {
-              context.pop();
+              if (!_isLoadingCart)
+                context.pop();
             },
           ),
           title: Text(
@@ -804,6 +837,8 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                           return;
                                                         }
 
+                                                        // CRITICAL FIX: Cache context-dependent values IMMEDIATELY
+                                                        // to prevent "deactivated widget's ancestor" crash
                                                         final messenger =
                                                             ScaffoldMessenger
                                                                 .maybeOf(
@@ -815,7 +850,8 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                             theme.primaryText;
                                                         final snackBackgroundColor =
                                                             theme.secondary;
-
+                                                        final authToken = currentAuthenticationToken;
+                                                        final cartId = FFAppState().cartId;
                                                         // Compute safe new quantity
                                                         final currentQty =
                                                         _itemQty(
@@ -839,11 +875,8 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                                 .updateCartCall
                                                                 .call(
                                                               cartItemId: itemId,
-                                                              token:
-                                                              currentAuthenticationToken,
-                                                              cartId:
-                                                              FFAppState()
-                                                                  .cartId,
+                                                              token: authToken,
+                                                              cartId: cartId,
                                                               quantity: newQty,
                                                             );
                                                             _logApi(
@@ -1034,6 +1067,8 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                           return;
                                                         }
 
+                                                        // CRITICAL FIX: Cache context-dependent values IMMEDIATELY
+                                                        // to prevent "deactivated widget's ancestor" crash
                                                         final messenger =
                                                             ScaffoldMessenger
                                                                 .maybeOf(
@@ -1045,7 +1080,8 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                             theme.primaryText;
                                                         final snackBackgroundColor =
                                                             theme.secondary;
-
+                                                        final authToken = currentAuthenticationToken;
+                                                        final cartId = FFAppState().cartId;
                                                         final currentQty =
                                                         _itemQty(
                                                             cartItemItem);
@@ -1065,11 +1101,8 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                                 .updateCartCall
                                                                 .call(
                                                               cartItemId: itemId,
-                                                              token:
-                                                              currentAuthenticationToken,
-                                                              cartId:
-                                                              FFAppState()
-                                                                  .cartId,
+                                                              token: authToken,
+                                                              cartId: cartId,
                                                               quantity: newQty,
                                                             );
                                                             _logApi(
@@ -1236,6 +1269,8 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                         return;
                                                       }
 
+                                                      // CRITICAL FIX: Cache context-dependent values IMMEDIATELY
+                                                      // to prevent "deactivated widget's ancestor" crash
                                                       final messenger =
                                                           ScaffoldMessenger
                                                               .maybeOf(
@@ -1247,6 +1282,8 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                           theme.primaryText;
                                                       final snackBackgroundColor =
                                                           theme.secondary;
+                                                      final authToken = currentAuthenticationToken;
+                                                      final cartId = FFAppState().cartId;
                                                       debugPrint(
                                                           '>>> removeCartCall cartItemId=${_itemIdForRemove(cartItemItem)}');
 
@@ -1261,10 +1298,8 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                             .removeCartCall
                                                             .call(
                                                           cartItemId: itemId,
-                                                          token:
-                                                          currentAuthenticationToken,
-                                                          cartId: FFAppState()
-                                                              .cartId,
+                                                          token: authToken,
+                                                          cartId: cartId,
                                                         );
                                                         _logApi(
                                                             'removeCartCall',
