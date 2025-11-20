@@ -39,6 +39,11 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
   // Key: cart_item_id, Value: loading operation type ('update', 'remove')
   final Map<String, String> _itemLoadingStates = {};
 
+  bool get _isContextAttached {
+    final ctx = context;
+    return mounted && ctx is Element && ctx.attached;
+  }
+
   // --- Helpers: robust JSON → int / String casting ---
   int _asInt(dynamic v, {int fallback = 0}) {
     if (v == null) return fallback;
@@ -268,11 +273,15 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
+      if (!_isContextAttached) {
+        return;
+      }
+
       if (FFAppState().cartId == null || FFAppState().cartId == '') {
         return;
       }
 
-      if (!mounted) return;
+      if (!_isContextAttached) return;
 
       final messenger = ScaffoldMessenger.maybeOf(context);
       final theme = FlutterFlowTheme.of(context);
@@ -291,7 +300,7 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
       );
       _logApi('getCartCall', _model.cartxyz);
 
-      if (!mounted) return;
+      if (!_isContextAttached) return;
 
       if ((_model.cartxyz?.succeeded ?? false)) {
         _model.cartItems = PasargadrugsGroup.getCartCall
@@ -337,7 +346,7 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
         );
       }
 
-      if (mounted) {
+      if (_isContextAttached) {
         setState(() {
           _isLoadingCart = false;
         });
