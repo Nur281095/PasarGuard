@@ -273,7 +273,7 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      if (!_isContextAttached) {
+      if (!mounted) {
         return;
       }
 
