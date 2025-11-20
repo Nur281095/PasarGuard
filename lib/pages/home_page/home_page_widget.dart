@@ -29,29 +29,6 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  /// Helper: sanitize image URL so it never crashes
-  String _sanitizeImageUrl(String? raw) {
-    const placeholder = 'https://fakeimg.pl/600x400?text=No+Image';
-
-    if (raw == null) return placeholder;
-
-    var s = raw.trim();
-
-    if (s.isEmpty || s.toLowerCase() == 'null') {
-      return placeholder;
-    }
-
-    // Replace spaces with %20 as requested
-    s = s.replaceAll(' ', '%20');
-
-    // Fix protocol-relative URLs
-    if (s.startsWith('//')) {
-      s = 'https:$s';
-    }
-
-    return s;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -502,7 +479,6 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                              // === Slider ===
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     20.0, 20.0, 20.0, 0.0),
@@ -540,77 +516,88 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
 
                                       // If API returned no slider items, just show an empty placeholder
                                       if (slider.isEmpty) {
+                                        // You can also return SizedBox.shrink() if you want nothing.
                                         return Container(
                                           width: double.infinity,
                                           height: 150.0,
                                           decoration: BoxDecoration(
-                                            borderRadius:
-                                            BorderRadius.circular(12.0),
-                                            color:
-                                            FlutterFlowTheme.of(context)
-                                                .secondaryBackground,
+                                            borderRadius: BorderRadius.circular(12.0),
+                                            color: FlutterFlowTheme.of(context).secondaryBackground,
                                           ),
                                           child: const SizedBox.shrink(),
                                         );
                                       }
 
                                       // Safe initial page: 0 if only one item, 1 if 2+ items
-                                      final initialPage =
-                                      slider.length > 1 ? 1 : 0;
+                                      final initialPage = slider.length > 1 ? 1 : 0;
 
                                       return Container(
                                         width: double.infinity,
                                         height: 150.0,
                                         child: CarouselSlider.builder(
                                           itemCount: slider.length,
-                                          itemBuilder:
-                                              (context, sliderIndex, _) {
-                                            final sliderItem =
-                                            slider[sliderIndex];
+                                          itemBuilder: (context, sliderIndex, _) {
+                                            final sliderItem = slider[sliderIndex];
 
-                                            final imageRaw =
-                                            getJsonField(
-                                              sliderItem,
-                                              r'''$.image''',
-                                            )?.toString();
+                                            final imageUrl = valueOrDefault<String>(
+                                              getJsonField(
+                                                sliderItem,
+                                                r'''$.image''',
+                                              )?.toString(),
+                                              'https://fakeimg.pl/1280x720', // fallback
+                                            );
 
-                                            final imageUrl =
-                                            _sanitizeImageUrl(imageRaw);
+                                            return Builder(
+                                              builder: (context) {
+                                                // Cache theme colors to prevent crashes
+                                                final alternateColor = FlutterFlowTheme.of(context).alternate;
+                                                final secondaryTextColor = FlutterFlowTheme.of(context).secondaryText;
+                                                final primaryColor = FlutterFlowTheme.of(context).primary;
 
-                                            return ClipRRect(
-                                              borderRadius:
-                                              BorderRadius.circular(8.0),
-                                              child: Image.network(
-                                                imageUrl,
-                                                width: 200.0,
-                                                height: 200.0,
-                                                fit: BoxFit.cover,
-                                                errorBuilder: (context, error,
-                                                    stackTrace) {
-                                                  return Container(
+                                                return ClipRRect(
+                                                  borderRadius: BorderRadius.circular(8.0),
+                                                  child: Image.network(
+                                                    imageUrl,
                                                     width: 200.0,
                                                     height: 200.0,
-                                                    color:
-                                                    FlutterFlowTheme.of(
-                                                        context)
-                                                        .alternate,
-                                                    alignment: Alignment.center,
-                                                    child: Icon(
-                                                      Icons.image_not_supported,
-                                                      color:
-                                                      FlutterFlowTheme.of(
-                                                          context)
-                                                          .secondaryText,
-                                                      size: 40.0,
-                                                    ),
-                                                  );
-                                                },
-                                              ),
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder: (context, error, stackTrace) {
+                                                      return Container(
+                                                        width: 200.0,
+                                                        height: 200.0,
+                                                        color: alternateColor,
+                                                        child: Icon(
+                                                          Icons.image_not_supported,
+                                                          color: secondaryTextColor,
+                                                          size: 40.0,
+                                                        ),
+                                                      );
+                                                    },
+                                                    loadingBuilder: (context, child, loadingProgress) {
+                                                      if (loadingProgress == null) return child;
+                                                      return Container(
+                                                        width: 200.0,
+                                                        height: 200.0,
+                                                        color: alternateColor,
+                                                        child: Center(
+                                                          child: CircularProgressIndicator(
+                                                            value: loadingProgress.expectedTotalBytes != null
+                                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                                    loadingProgress.expectedTotalBytes!
+                                                                : null,
+                                                            color: primaryColor,
+                                                            strokeWidth: 2.0,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                );
+                                              },
                                             );
                                           },
                                           carouselController:
-                                          _model.carouselController ??=
-                                              CarouselSliderController(),
+                                          _model.carouselController ??= CarouselSliderController(),
                                           options: CarouselOptions(
                                             initialPage: initialPage,
                                             viewportFraction: 0.65,
@@ -620,17 +607,12 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                                             enableInfiniteScroll: true,
                                             scrollDirection: Axis.horizontal,
                                             autoPlay: true,
-                                            autoPlayAnimationDuration:
-                                            const Duration(
-                                                milliseconds: 800),
-                                            autoPlayInterval:
-                                            const Duration(
-                                                milliseconds: 4800),
+                                            autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                                            autoPlayInterval: const Duration(milliseconds: 4800),
                                             autoPlayCurve: Curves.linear,
                                             pauseAutoPlayInFiniteScroll: true,
                                             onPageChanged: (index, _) =>
-                                            _model.carouselCurrentIndex =
-                                                index,
+                                            _model.carouselCurrentIndex = index,
                                           ),
                                         ),
                                       );
@@ -638,8 +620,161 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                                   ),
                                 ),
                               ),
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    20.0, 20.0, 20.0, 0.0),
+                                child: Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(),
+                                  child: Text(
+                                    'Top Trending Rug Size',
+                                    style: FlutterFlowTheme.of(context)
+                                        .titleMedium
+                                        .override(
+                                      font: GoogleFonts.interTight(
+                                        fontWeight:
+                                        FlutterFlowTheme.of(context)
+                                            .titleMedium
+                                            .fontWeight,
+                                        fontStyle:
+                                        FlutterFlowTheme.of(context)
+                                            .titleMedium
+                                            .fontStyle,
+                                      ),
+                                      letterSpacing: 0.0,
+                                      fontWeight:
+                                      FlutterFlowTheme.of(context)
+                                          .titleMedium
+                                          .fontWeight,
+                                      fontStyle:
+                                      FlutterFlowTheme.of(context)
+                                          .titleMedium
+                                          .fontStyle,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    20.0, 10.0, 20.0, 20.0),
+                                child: Builder(
+                                  builder: (context) {
+                                    final shopBySize = PasargadrugsGroup.homeCall
+                                        .shopBySize(
+                                      homePageHomeResponse.jsonBody,
+                                    )
+                                        ?.withoutNulls
+                                        .toList() ??
+                                        [];
+                                    _model.debugGeneratorVariables[
+                                    'shopBySize${shopBySize.length > 100 ? ' (first 100)' : ''}'] =
+                                        debugSerializeParam(
+                                          shopBySize.take(100),
+                                          ParamType.JSON,
+                                          isList: true,
+                                          link:
+                                          'https://app.flutterflow.io/project/pasargad-82dm1q?tab=uiBuilder&page=HomePage',
+                                          name: 'dynamic',
+                                          nullable: false,
+                                        );
+                                    debugLogWidgetClass(_model);
 
-                              // === Shop by Sizes ===
+                                    if (shopBySize.isEmpty) {
+                                      return const SizedBox.shrink();
+                                    }
+
+                                    return GridView.builder(
+                                      padding: EdgeInsets.zero,
+                                      gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        crossAxisSpacing: 12.0,
+                                        mainAxisSpacing: 12.0,
+                                        childAspectRatio: 2.5,
+                                      ),
+                                      shrinkWrap: true,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      itemCount: shopBySize.length,
+                                      itemBuilder: (context, sizeIndex) {
+                                        final sizeItem = shopBySize[sizeIndex];
+                                        return InkWell(
+                                          splashColor: Colors.transparent,
+                                          focusColor: Colors.transparent,
+                                          hoverColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          onTap: () async {
+                                            // Navigate to products page with size filter
+                                            context.pushNamed(
+                                              CategoriesItemsPageWidget.routeName,
+                                              queryParameters: {
+                                                'catID': serializeParam(
+                                                  null,
+                                                  ParamType.int,
+                                                ),
+                                                'navTitle': serializeParam(
+                                                  'Size: $sizeItem',
+                                                  ParamType.String,
+                                                ),
+                                                'filter': serializeParam(
+                                                  {
+                                                    'size': sizeItem,
+                                                    'type': 'rug',
+                                                  },
+                                                  ParamType.JSON,
+                                                ),
+                                              }.withoutNulls,
+                                            );
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFFF5F5F5), // Light grey background
+                                              borderRadius: BorderRadius.circular(10.0),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  blurRadius: 2.0,
+                                                  color: const Color(0x33000000),
+                                                  offset: const Offset(0.0, 1.0),
+                                                )
+                                              ],
+                                            ),
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                                    8.0, 12.0, 8.0, 12.0),
+                                                child: Text(
+                                                  sizeItem,
+                                                  style: FlutterFlowTheme.of(context)
+                                                      .bodyMedium
+                                                      .override(
+                                                    font: GoogleFonts.inter(
+                                                      fontWeight: FontWeight.w600,
+                                                      fontStyle:
+                                                      FlutterFlowTheme.of(context)
+                                                          .bodyMedium
+                                                          .fontStyle,
+                                                    ),
+                                                    color: const Color(0xFF1E3A8A), // Dark blue text
+                                                    fontSize: 14.0,
+                                                    letterSpacing: 0.0,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontStyle:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyMedium
+                                                        .fontStyle,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     20.0, 20.0, 20.0, 0.0),
@@ -683,11 +818,12 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                                   decoration: BoxDecoration(),
                                   child: Builder(
                                     builder: (context) {
-                                      final product =
-                                          PasargadrugsGroup.homeCall.products(
-                                            homePageHomeResponse.jsonBody,
-                                          )?.toList() ??
-                                              [];
+                                      final product = PasargadrugsGroup.homeCall
+                                          .products(
+                                        homePageHomeResponse.jsonBody,
+                                      )
+                                          ?.toList() ??
+                                          [];
                                       _model.debugGeneratorVariables[
                                       'product${product.length > 100 ? ' (first 100)' : ''}'] =
                                           debugSerializeParam(
@@ -705,239 +841,254 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                                         scrollDirection: Axis.horizontal,
                                         child: Row(
                                           mainAxisSize: MainAxisSize.max,
-                                          children:
-                                          List.generate(product.length,
-                                                  (productIndex) {
-                                                final productItem =
-                                                product[productIndex];
-
-                                                final imgRaw = getJsonField(
-                                                  productItem,
-                                                  r'''$.images[0]''',
-                                                )?.toString();
-
-                                                final imgUrl =
-                                                _sanitizeImageUrl(imgRaw);
-
-                                                return InkWell(
-                                                  splashColor: Colors.transparent,
-                                                  focusColor: Colors.transparent,
-                                                  hoverColor: Colors.transparent,
-                                                  highlightColor:
-                                                  Colors.transparent,
-                                                  onTap: () async {
-                                                    context.pushNamed(
-                                                      ProductDetailPageWidget
-                                                          .routeName,
-                                                      queryParameters: {
-                                                        'prodID': serializeParam(
-                                                          getJsonField(
-                                                            productItem,
-                                                            r'''$.id''',
-                                                          ),
-                                                          ParamType.int,
-                                                        ),
-                                                      }.withoutNulls,
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    width: 100.0,
-                                                    height: 100.0,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                      BorderRadius.only(
-                                                        bottomLeft:
-                                                        Radius.circular(8.0),
-                                                        bottomRight:
-                                                        Radius.circular(8.0),
-                                                        topLeft:
-                                                        Radius.circular(8.0),
-                                                        topRight:
-                                                        Radius.circular(8.0),
+                                          children: List.generate(
+                                              product.length, (productIndex) {
+                                            final productItem =
+                                            product[productIndex];
+                                            return InkWell(
+                                              splashColor: Colors.transparent,
+                                              focusColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              highlightColor:
+                                              Colors.transparent,
+                                              onTap: () async {
+                                                context.pushNamed(
+                                                  ProductDetailPageWidget
+                                                      .routeName,
+                                                  queryParameters: {
+                                                    'prodID': serializeParam(
+                                                      getJsonField(
+                                                        productItem,
+                                                        r'''$.id''',
                                                       ),
+                                                      ParamType.int,
                                                     ),
-                                                    child: Stack(
-                                                      alignment:
-                                                      AlignmentDirectional(
-                                                          0.0, 0.0),
-                                                      children: [
-                                                        Container(
-                                                          width: 100.0,
-                                                          height: 100.0,
-                                                          decoration: BoxDecoration(
-                                                            color:
-                                                            FlutterFlowTheme.of(
-                                                                context)
-                                                                .secondaryBackground,
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                blurRadius: 4.0,
-                                                                color: Color(
-                                                                    0x33000000),
-                                                                offset: Offset(
-                                                                  0.0,
-                                                                  2.0,
-                                                                ),
-                                                              )
-                                                            ],
-                                                            borderRadius:
-                                                            BorderRadius.only(
-                                                              bottomLeft:
-                                                              Radius.circular(
-                                                                  8.0),
-                                                              bottomRight:
-                                                              Radius.circular(
-                                                                  8.0),
-                                                              topLeft:
-                                                              Radius.circular(
-                                                                  8.0),
-                                                              topRight:
-                                                              Radius.circular(
-                                                                  8.0),
+                                                  }.withoutNulls,
+                                                );
+                                              },
+                                              child: Container(
+                                                width: 100.0,
+                                                height: 100.0,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                  BorderRadius.only(
+                                                    bottomLeft:
+                                                    Radius.circular(8.0),
+                                                    bottomRight:
+                                                    Radius.circular(8.0),
+                                                    topLeft:
+                                                    Radius.circular(8.0),
+                                                    topRight:
+                                                    Radius.circular(8.0),
+                                                  ),
+                                                ),
+                                                child: Stack(
+                                                  alignment:
+                                                  AlignmentDirectional(
+                                                      0.0, 0.0),
+                                                  children: [
+                                                    Container(
+                                                      width: 100.0,
+                                                      height: 100.0,
+                                                      decoration: BoxDecoration(
+                                                        color: FlutterFlowTheme
+                                                            .of(context)
+                                                            .secondaryBackground,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            blurRadius: 4.0,
+                                                            color: Color(
+                                                                0x33000000),
+                                                            offset: Offset(
+                                                              0.0,
+                                                              2.0,
                                                             ),
-                                                          ),
-                                                          child: ClipRRect(
+                                                          )
+                                                        ],
+                                                        borderRadius:
+                                                        BorderRadius.only(
+                                                          bottomLeft:
+                                                          Radius.circular(
+                                                              8.0),
+                                                          bottomRight:
+                                                          Radius.circular(
+                                                              8.0),
+                                                          topLeft:
+                                                          Radius.circular(
+                                                              8.0),
+                                                          topRight:
+                                                          Radius.circular(
+                                                              8.0),
+                                                        ),
+                                                      ),
+                                                      child: Builder(
+                                                        builder: (context) {
+                                                          // Cache theme colors
+                                                          final alternateColor = FlutterFlowTheme.of(context).alternate;
+                                                          final secondaryTextColor = FlutterFlowTheme.of(context).secondaryText;
+                                                          final primaryColor = FlutterFlowTheme.of(context).primary;
+
+                                                          return ClipRRect(
                                                             borderRadius:
                                                             BorderRadius
                                                                 .circular(8.0),
                                                             child: Image.network(
-                                                              imgUrl,
+                                                              valueOrDefault<
+                                                                  String>(
+                                                                getJsonField(
+                                                                  productItem,
+                                                                  r'''$.images[0]''',
+                                                                )?.toString(),
+                                                                'https://picsum.photos/seed/530/600',
+                                                              ),
                                                               width: 100.0,
                                                               height: 100.0,
                                                               fit: BoxFit.cover,
-                                                              errorBuilder:
-                                                                  (context, error,
-                                                                  stackTrace) {
+                                                              errorBuilder: (context, error, stackTrace) {
                                                                 return Container(
                                                                   width: 100.0,
                                                                   height: 100.0,
-                                                                  color: FlutterFlowTheme
-                                                                      .of(context)
-                                                                      .alternate,
-                                                                  alignment:
-                                                                  Alignment
-                                                                      .center,
+                                                                  color: alternateColor,
                                                                   child: Icon(
-                                                                    Icons
-                                                                        .image_not_supported,
-                                                                    color: FlutterFlowTheme.of(
-                                                                        context)
-                                                                        .secondaryText,
+                                                                    Icons.image_not_supported,
+                                                                    color: secondaryTextColor,
                                                                     size: 32.0,
                                                                   ),
                                                                 );
                                                               },
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          width: 100.0,
-                                                          height: 100.0,
-                                                          decoration: BoxDecoration(
-                                                            gradient:
-                                                            LinearGradient(
-                                                              colors: [
-                                                                Colors.transparent,
-                                                                Colors.transparent,
-                                                                FlutterFlowTheme.of(
-                                                                    context)
-                                                                    .primaryText
-                                                              ],
-                                                              stops: [0.0, 0.3, 1.0],
-                                                              begin:
-                                                              AlignmentDirectional(
-                                                                  0.0, -1.0),
-                                                              end:
-                                                              AlignmentDirectional(
-                                                                  0, 1.0),
-                                                            ),
-                                                            borderRadius:
-                                                            BorderRadius.only(
-                                                              bottomLeft:
-                                                              Radius.circular(
-                                                                  8.0),
-                                                              bottomRight:
-                                                              Radius.circular(
-                                                                  8.0),
-                                                              topLeft:
-                                                              Radius.circular(
-                                                                  8.0),
-                                                              topRight:
-                                                              Radius.circular(
-                                                                  8.0),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Align(
-                                                          alignment:
-                                                          AlignmentDirectional(
-                                                              0.0, 1.0),
-                                                          child: Container(
-                                                            width: 90.0,
-                                                            decoration:
-                                                            BoxDecoration(),
-                                                            child: Padding(
-                                                              padding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                  0.0,
-                                                                  0.0,
-                                                                  0.0,
-                                                                  6.0),
-                                                              child: Text(
-                                                                getJsonField(
-                                                                  productItem,
-                                                                  r'''$.name''',
-                                                                ).toString(),
-                                                                textAlign: TextAlign
-                                                                    .center,
-                                                                style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                    .bodyMedium
-                                                                    .override(
-                                                                  font:
-                                                                  GoogleFonts
-                                                                      .inter(
-                                                                    fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                        context)
-                                                                        .bodyMedium
-                                                                        .fontStyle,
+                                                              loadingBuilder: (context, child, loadingProgress) {
+                                                                if (loadingProgress == null) return child;
+                                                                return Container(
+                                                                  width: 100.0,
+                                                                  height: 100.0,
+                                                                  color: alternateColor,
+                                                                  child: Center(
+                                                                    child: CircularProgressIndicator(
+                                                                      value: loadingProgress.expectedTotalBytes != null
+                                                                          ? loadingProgress.cumulativeBytesLoaded /
+                                                                              loadingProgress.expectedTotalBytes!
+                                                                          : null,
+                                                                      color: primaryColor,
+                                                                      strokeWidth: 2.0,
+                                                                    ),
                                                                   ),
-                                                                  color: FlutterFlowTheme.of(
-                                                                      context)
-                                                                      .secondaryBackground,
-                                                                  fontSize:
-                                                                  12.0,
-                                                                  letterSpacing:
-                                                                  0.0,
-                                                                  fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                      context)
-                                                                      .bodyMedium
-                                                                      .fontStyle,
-                                                                ),
+                                                                );
+                                                              },
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      width: 100.0,
+                                                      height: 100.0,
+                                                      decoration: BoxDecoration(
+                                                        gradient:
+                                                        LinearGradient(
+                                                          colors: [
+                                                            Colors.transparent,
+                                                            Colors.transparent,
+                                                            FlutterFlowTheme.of(
+                                                                context)
+                                                                .primaryText
+                                                          ],
+                                                          stops: [
+                                                            0.0,
+                                                            0.3,
+                                                            1.0
+                                                          ],
+                                                          begin:
+                                                          AlignmentDirectional(
+                                                              0.0, -1.0),
+                                                          end:
+                                                          AlignmentDirectional(
+                                                              0, 1.0),
+                                                        ),
+                                                        borderRadius:
+                                                        BorderRadius.only(
+                                                          bottomLeft:
+                                                          Radius.circular(
+                                                              8.0),
+                                                          bottomRight:
+                                                          Radius.circular(
+                                                              8.0),
+                                                          topLeft:
+                                                          Radius.circular(
+                                                              8.0),
+                                                          topRight:
+                                                          Radius.circular(
+                                                              8.0),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Align(
+                                                      alignment:
+                                                      AlignmentDirectional(
+                                                          0.0, 1.0),
+                                                      child: Container(
+                                                        width: 90.0,
+                                                        decoration:
+                                                        BoxDecoration(),
+                                                        child: Padding(
+                                                          padding:
+                                                          EdgeInsetsDirectional
+                                                              .fromSTEB(
+                                                              0.0,
+                                                              0.0,
+                                                              0.0,
+                                                              6.0),
+                                                          child: Text(
+                                                            getJsonField(
+                                                              productItem,
+                                                              r'''$.name''',
+                                                            ).toString(),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: FlutterFlowTheme
+                                                                .of(context)
+                                                                .bodyMedium
+                                                                .override(
+                                                              font:
+                                                              GoogleFonts
+                                                                  .inter(
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w600,
+                                                                fontStyle: FlutterFlowTheme.of(
+                                                                    context)
+                                                                    .bodyMedium
+                                                                    .fontStyle,
                                                               ),
+                                                              color: FlutterFlowTheme.of(
+                                                                  context)
+                                                                  .secondaryBackground,
+                                                              fontSize:
+                                                              12.0,
+                                                              letterSpacing:
+                                                              0.0,
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .w600,
+                                                              fontStyle: FlutterFlowTheme.of(
+                                                                  context)
+                                                                  .bodyMedium
+                                                                  .fontStyle,
                                                             ),
                                                           ),
                                                         ),
-                                                      ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                );
-                                              }).divide(SizedBox(width: 12.0)),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          }).divide(SizedBox(width: 12.0)),
                                         ),
                                       );
                                     },
                                   ),
                                 ),
                               ),
-
-                              // === Shop By Categories ===
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     20.0, 0.0, 20.0, 0.0),
@@ -1006,258 +1157,269 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                                         scrollDirection: Axis.horizontal,
                                         child: Row(
                                           mainAxisSize: MainAxisSize.max,
-                                          children:
-                                          List.generate(category.length,
-                                                  (categoryIndex) {
-                                                final categoryItem =
-                                                category[categoryIndex];
-
-                                                final catImgUrl =
-                                                _sanitizeImageUrl(
-                                                    categoryItem.image);
-
-                                                return InkWell(
-                                                  splashColor: Colors.transparent,
-                                                  focusColor: Colors.transparent,
-                                                  hoverColor: Colors.transparent,
-                                                  highlightColor:
-                                                  Colors.transparent,
-                                                  onTap: () async {
-                                                    context.pushNamed(
-                                                      CategoriesItemsPageWidget
-                                                          .routeName,
-                                                      queryParameters: {
-                                                        'catID': serializeParam(
-                                                          categoryItem.id,
-                                                          ParamType.int,
-                                                        ),
-                                                        'navTitle': serializeParam(
-                                                          categoryItem.name,
-                                                          ParamType.String,
-                                                        ),
-                                                        'filter': serializeParam(
-                                                          PasargadrugsGroup
-                                                              .homeCall
-                                                              .filters(
-                                                            homePageHomeResponse
-                                                                .jsonBody,
-                                                          ),
-                                                          ParamType.JSON,
-                                                        ),
-                                                      }.withoutNulls,
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    width: 100.0,
-                                                    height: 100.0,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                      BorderRadius.only(
-                                                        bottomLeft:
-                                                        Radius.circular(8.0),
-                                                        bottomRight:
-                                                        Radius.circular(8.0),
-                                                        topLeft:
-                                                        Radius.circular(8.0),
-                                                        topRight:
-                                                        Radius.circular(8.0),
-                                                      ),
+                                          children: List.generate(
+                                              category.length, (categoryIndex) {
+                                            final categoryItem =
+                                            category[categoryIndex];
+                                            return InkWell(
+                                              splashColor: Colors.transparent,
+                                              focusColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              highlightColor:
+                                              Colors.transparent,
+                                              onTap: () async {
+                                                context.pushNamed(
+                                                  CategoriesItemsPageWidget
+                                                      .routeName,
+                                                  queryParameters: {
+                                                    'catID': serializeParam(
+                                                      categoryItem.id,
+                                                      ParamType.int,
                                                     ),
-                                                    child: Stack(
-                                                      alignment:
-                                                      AlignmentDirectional(
-                                                          0.0, 0.0),
-                                                      children: [
-                                                        Container(
-                                                          width: 100.0,
-                                                          height: 100.0,
-                                                          decoration: BoxDecoration(
-                                                            color:
-                                                            FlutterFlowTheme.of(
-                                                                context)
-                                                                .secondaryBackground,
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                blurRadius: 4.0,
-                                                                color: Color(
-                                                                    0x33000000),
-                                                                offset: Offset(
-                                                                  0.0,
-                                                                  2.0,
-                                                                ),
-                                                              )
-                                                            ],
-                                                            borderRadius:
-                                                            BorderRadius.only(
-                                                              bottomLeft:
-                                                              Radius.circular(
-                                                                  8.0),
-                                                              bottomRight:
-                                                              Radius.circular(
-                                                                  8.0),
-                                                              topLeft:
-                                                              Radius.circular(
-                                                                  8.0),
-                                                              topRight:
-                                                              Radius.circular(
-                                                                  8.0),
+                                                    'navTitle': serializeParam(
+                                                      categoryItem.name,
+                                                      ParamType.String,
+                                                    ),
+                                                    'filter': serializeParam(
+                                                      PasargadrugsGroup.homeCall
+                                                          .filters(
+                                                        homePageHomeResponse
+                                                            .jsonBody,
+                                                      ),
+                                                      ParamType.JSON,
+                                                    ),
+                                                  }.withoutNulls,
+                                                );
+                                              },
+                                              child: Container(
+                                                width: 100.0,
+                                                height: 100.0,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                  BorderRadius.only(
+                                                    bottomLeft:
+                                                    Radius.circular(8.0),
+                                                    bottomRight:
+                                                    Radius.circular(8.0),
+                                                    topLeft:
+                                                    Radius.circular(8.0),
+                                                    topRight:
+                                                    Radius.circular(8.0),
+                                                  ),
+                                                ),
+                                                child: Stack(
+                                                  alignment:
+                                                  AlignmentDirectional(
+                                                      0.0, 0.0),
+                                                  children: [
+                                                    Container(
+                                                      width: 100.0,
+                                                      height: 100.0,
+                                                      decoration: BoxDecoration(
+                                                        color: FlutterFlowTheme
+                                                            .of(context)
+                                                            .secondaryBackground,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            blurRadius: 4.0,
+                                                            color: Color(
+                                                                0x33000000),
+                                                            offset: Offset(
+                                                              0.0,
+                                                              2.0,
                                                             ),
-                                                          ),
-                                                          child: ClipRRect(
+                                                          )
+                                                        ],
+                                                        borderRadius:
+                                                        BorderRadius.only(
+                                                          bottomLeft:
+                                                          Radius.circular(
+                                                              8.0),
+                                                          bottomRight:
+                                                          Radius.circular(
+                                                              8.0),
+                                                          topLeft:
+                                                          Radius.circular(
+                                                              8.0),
+                                                          topRight:
+                                                          Radius.circular(
+                                                              8.0),
+                                                        ),
+                                                      ),
+                                                      child: Builder(
+                                                        builder: (context) {
+                                                          // Cache theme colors
+                                                          final alternateColor = FlutterFlowTheme.of(context).alternate;
+                                                          final secondaryTextColor = FlutterFlowTheme.of(context).secondaryText;
+                                                          final primaryColor = FlutterFlowTheme.of(context).primary;
+
+                                                          return ClipRRect(
                                                             borderRadius:
                                                             BorderRadius
                                                                 .circular(8.0),
                                                             child: Image.network(
-                                                              catImgUrl,
+                                                              categoryItem.image,
                                                               width: 100.0,
                                                               height: 100.0,
                                                               fit: BoxFit.cover,
-                                                              errorBuilder:
-                                                                  (context, error,
-                                                                  stackTrace) {
+                                                              errorBuilder: (context, error, stackTrace) {
                                                                 return Container(
                                                                   width: 100.0,
                                                                   height: 100.0,
-                                                                  color: FlutterFlowTheme
-                                                                      .of(context)
-                                                                      .alternate,
-                                                                  alignment:
-                                                                  Alignment
-                                                                      .center,
+                                                                  color: alternateColor,
                                                                   child: Icon(
-                                                                    Icons
-                                                                        .image_not_supported,
-                                                                    color: FlutterFlowTheme.of(
-                                                                        context)
-                                                                        .secondaryText,
+                                                                    Icons.image_not_supported,
+                                                                    color: secondaryTextColor,
                                                                     size: 32.0,
                                                                   ),
                                                                 );
                                                               },
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          width: 100.0,
-                                                          height: 100.0,
-                                                          decoration: BoxDecoration(
-                                                            gradient:
-                                                            LinearGradient(
-                                                              colors: [
-                                                                Colors.transparent,
-                                                                Colors.transparent,
-                                                                FlutterFlowTheme.of(
-                                                                    context)
-                                                                    .primaryText
-                                                              ],
-                                                              stops: [0.0, 0.3, 1.0],
-                                                              begin:
-                                                              AlignmentDirectional(
-                                                                  0.0, -1.0),
-                                                              end:
-                                                              AlignmentDirectional(
-                                                                  0, 1.0),
-                                                            ),
-                                                            borderRadius:
-                                                            BorderRadius.only(
-                                                              bottomLeft:
-                                                              Radius.circular(
-                                                                  8.0),
-                                                              bottomRight:
-                                                              Radius.circular(
-                                                                  8.0),
-                                                              topLeft:
-                                                              Radius.circular(
-                                                                  8.0),
-                                                              topRight:
-                                                              Radius.circular(
-                                                                  8.0),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Align(
-                                                          alignment:
-                                                          AlignmentDirectional(
-                                                              0.0, 1.0),
-                                                          child: Container(
-                                                            width: 90.0,
-                                                            decoration:
-                                                            BoxDecoration(
-                                                              borderRadius:
-                                                              BorderRadius.only(
-                                                                bottomLeft:
-                                                                Radius.circular(
-                                                                    0.0),
-                                                                bottomRight:
-                                                                Radius.circular(
-                                                                    0.0),
-                                                                topLeft:
-                                                                Radius.circular(
-                                                                    0.0),
-                                                                topRight:
-                                                                Radius.circular(
-                                                                    0.0),
-                                                              ),
-                                                            ),
-                                                            child: Padding(
-                                                              padding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                  0.0,
-                                                                  0.0,
-                                                                  0.0,
-                                                                  6.0),
-                                                              child: Text(
-                                                                categoryItem.name,
-                                                                textAlign: TextAlign
-                                                                    .center,
-                                                                style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                    .bodyMedium
-                                                                    .override(
-                                                                  font:
-                                                                  GoogleFonts
-                                                                      .inter(
-                                                                    fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                        context)
-                                                                        .bodyMedium
-                                                                        .fontStyle,
+                                                              loadingBuilder: (context, child, loadingProgress) {
+                                                                if (loadingProgress == null) return child;
+                                                                return Container(
+                                                                  width: 100.0,
+                                                                  height: 100.0,
+                                                                  color: alternateColor,
+                                                                  child: Center(
+                                                                    child: CircularProgressIndicator(
+                                                                      value: loadingProgress.expectedTotalBytes != null
+                                                                          ? loadingProgress.cumulativeBytesLoaded /
+                                                                              loadingProgress.expectedTotalBytes!
+                                                                          : null,
+                                                                      color: primaryColor,
+                                                                      strokeWidth: 2.0,
+                                                                    ),
                                                                   ),
-                                                                  color: FlutterFlowTheme.of(
-                                                                      context)
-                                                                      .secondaryBackground,
-                                                                  fontSize:
-                                                                  12.0,
-                                                                  letterSpacing:
-                                                                  0.0,
-                                                                  fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                      context)
-                                                                      .bodyMedium
-                                                                      .fontStyle,
-                                                                ),
+                                                                );
+                                                              },
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      width: 100.0,
+                                                      height: 100.0,
+                                                      decoration: BoxDecoration(
+                                                        gradient:
+                                                        LinearGradient(
+                                                          colors: [
+                                                            Colors.transparent,
+                                                            Colors.transparent,
+                                                            FlutterFlowTheme.of(
+                                                                context)
+                                                                .primaryText
+                                                          ],
+                                                          stops: [
+                                                            0.0,
+                                                            0.3,
+                                                            1.0
+                                                          ],
+                                                          begin:
+                                                          AlignmentDirectional(
+                                                              0.0, -1.0),
+                                                          end:
+                                                          AlignmentDirectional(
+                                                              0, 1.0),
+                                                        ),
+                                                        borderRadius:
+                                                        BorderRadius.only(
+                                                          bottomLeft:
+                                                          Radius.circular(
+                                                              8.0),
+                                                          bottomRight:
+                                                          Radius.circular(
+                                                              8.0),
+                                                          topLeft:
+                                                          Radius.circular(
+                                                              8.0),
+                                                          topRight:
+                                                          Radius.circular(
+                                                              8.0),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Align(
+                                                      alignment:
+                                                      AlignmentDirectional(
+                                                          0.0, 1.0),
+                                                      child: Container(
+                                                        width: 90.0,
+                                                        decoration:
+                                                        BoxDecoration(
+                                                          borderRadius:
+                                                          BorderRadius.only(
+                                                            bottomLeft:
+                                                            Radius.circular(
+                                                                0.0),
+                                                            bottomRight:
+                                                            Radius.circular(
+                                                                0.0),
+                                                            topLeft:
+                                                            Radius.circular(
+                                                                0.0),
+                                                            topRight:
+                                                            Radius.circular(
+                                                                0.0),
+                                                          ),
+                                                        ),
+                                                        child: Padding(
+                                                          padding:
+                                                          EdgeInsetsDirectional
+                                                              .fromSTEB(
+                                                              0.0,
+                                                              0.0,
+                                                              0.0,
+                                                              6.0),
+                                                          child: Text(
+                                                            categoryItem.name,
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: FlutterFlowTheme
+                                                                .of(context)
+                                                                .bodyMedium
+                                                                .override(
+                                                              font:
+                                                              GoogleFonts
+                                                                  .inter(
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w600,
+                                                                fontStyle: FlutterFlowTheme.of(
+                                                                    context)
+                                                                    .bodyMedium
+                                                                    .fontStyle,
                                                               ),
+                                                              color: FlutterFlowTheme.of(
+                                                                  context)
+                                                                  .secondaryBackground,
+                                                              fontSize:
+                                                              12.0,
+                                                              letterSpacing:
+                                                              0.0,
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .w600,
+                                                              fontStyle: FlutterFlowTheme.of(
+                                                                  context)
+                                                                  .bodyMedium
+                                                                  .fontStyle,
                                                             ),
                                                           ),
                                                         ),
-                                                      ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                );
-                                              }).divide(SizedBox(width: 12.0)),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          }).divide(SizedBox(width: 12.0)),
                                         ),
                                       );
                                     },
                                   ),
                                 ),
                               ),
-
-                              // === Collections ===
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     20.0, 0.0, 20.0, 0.0),
@@ -1331,10 +1493,6 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                                                   (collectionIndex) {
                                                 final collectionItem =
                                                 collection[collectionIndex];
-
-                                                final colImgUrl = _sanitizeImageUrl(
-                                                    collectionItem.image);
-
                                                 return InkWell(
                                                   splashColor: Colors.transparent,
                                                   focusColor: Colors.transparent,
@@ -1378,9 +1536,8 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                                                           width: 100.0,
                                                           height: 100.0,
                                                           decoration: BoxDecoration(
-                                                            color:
-                                                            FlutterFlowTheme.of(
-                                                                context)
+                                                            color: FlutterFlowTheme
+                                                                .of(context)
                                                                 .secondaryBackground,
                                                             boxShadow: [
                                                               BoxShadow(
@@ -1409,38 +1566,60 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                                                                   8.0),
                                                             ),
                                                           ),
-                                                          child: ClipRRect(
-                                                            borderRadius:
-                                                            BorderRadius
-                                                                .circular(8.0),
-                                                            child: Image.network(
-                                                              colImgUrl,
-                                                              width: 100.0,
-                                                              height: 100.0,
-                                                              fit: BoxFit.cover,
-                                                              errorBuilder:
-                                                                  (context, error,
-                                                                  stackTrace) {
-                                                                return Container(
+                                                          child: Builder(
+                                                            builder: (context) {
+                                                              // Cache theme colors
+                                                              final alternateColor = FlutterFlowTheme.of(context).alternate;
+                                                              final secondaryTextColor = FlutterFlowTheme.of(context).secondaryText;
+                                                              final primaryColor = FlutterFlowTheme.of(context).primary;
+
+                                                              return ClipRRect(
+                                                                borderRadius:
+                                                                BorderRadius
+                                                                    .circular(8.0),
+                                                                child: Image.network(
+                                                                  valueOrDefault<
+                                                                      String>(
+                                                                    collectionItem
+                                                                        .image,
+                                                                    'https://picsum.photos/seed/530/600',
+                                                                  ),
                                                                   width: 100.0,
                                                                   height: 100.0,
-                                                                  color: FlutterFlowTheme
-                                                                      .of(context)
-                                                                      .alternate,
-                                                                  alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                                  child: Icon(
-                                                                    Icons
-                                                                        .image_not_supported,
-                                                                    color: FlutterFlowTheme.of(
-                                                                        context)
-                                                                        .secondaryText,
-                                                                    size: 32.0,
-                                                                  ),
-                                                                );
-                                                              },
-                                                            ),
+                                                                  fit: BoxFit.cover,
+                                                                  errorBuilder: (context, error, stackTrace) {
+                                                                    return Container(
+                                                                      width: 100.0,
+                                                                      height: 100.0,
+                                                                      color: alternateColor,
+                                                                      child: Icon(
+                                                                        Icons.image_not_supported,
+                                                                        color: secondaryTextColor,
+                                                                        size: 32.0,
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                  loadingBuilder: (context, child, loadingProgress) {
+                                                                    if (loadingProgress == null) return child;
+                                                                    return Container(
+                                                                      width: 100.0,
+                                                                      height: 100.0,
+                                                                      color: alternateColor,
+                                                                      child: Center(
+                                                                        child: CircularProgressIndicator(
+                                                                          value: loadingProgress.expectedTotalBytes != null
+                                                                              ? loadingProgress.cumulativeBytesLoaded /
+                                                                                  loadingProgress.expectedTotalBytes!
+                                                                              : null,
+                                                                          color: primaryColor,
+                                                                          strokeWidth: 2.0,
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                ),
+                                                              );
+                                                            },
                                                           ),
                                                         ),
                                                         Container(
@@ -1456,7 +1635,11 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                                                                     context)
                                                                     .primaryText
                                                               ],
-                                                              stops: [0.0, 0.3, 1.0],
+                                                              stops: [
+                                                                0.0,
+                                                                0.3,
+                                                                1.0
+                                                              ],
                                                               begin:
                                                               AlignmentDirectional(
                                                                   0.0, -1.0),

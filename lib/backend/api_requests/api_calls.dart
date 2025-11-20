@@ -293,6 +293,15 @@ class HomeCall {
     response,
     r'''$.data.filters''',
   );
+  List<String>? shopBySize(dynamic response) => (getJsonField(
+    response,
+    r'''$.data.shopBySize''',
+    true,
+  ) as List?)
+      ?.withoutNulls
+      .map((x) => castToType<String>(x))
+      .withoutNulls
+      .toList();
 }
 
 class ProductsCall {
@@ -306,6 +315,7 @@ class ProductsCall {
     int? color,
     String? type = '',
     String? search = '',
+    String? size = '',
   }) async {
     final baseUrl = PasargadrugsGroup.getBaseUrl();
 
@@ -325,6 +335,7 @@ class ProductsCall {
         'color': color,
         'type': type,
         'search': search,
+        'size': size,
       },
       returnBody: true,
       encodeBodyUtf8: false,

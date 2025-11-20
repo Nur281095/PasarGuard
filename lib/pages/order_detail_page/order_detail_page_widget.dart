@@ -551,16 +551,55 @@ class _OrderDetailPageWidgetState extends State<OrderDetailPageWidget>
                                                   padding: EdgeInsetsDirectional
                                                       .fromSTEB(
                                                           12.0, 0.0, 0.0, 0.0),
-                                                  child: ClipRRect(
-                                                    borderRadius:
+                                                  child: Builder(
+                                                    builder: (context) {
+                                                      // Cache theme colors
+                                                      final alternateColor = FlutterFlowTheme.of(context).alternate;
+                                                      final secondaryTextColor = FlutterFlowTheme.of(context).secondaryText;
+                                                      final primaryColor = FlutterFlowTheme.of(context).primary;
+
+                                                      return ClipRRect(
+                                                        borderRadius:
                                                         BorderRadius.circular(
                                                             0.0),
-                                                    child: Image.network(
-                                                      'https://picsum.photos/seed/503/600',
-                                                      width: 80.0,
-                                                      height: 80.0,
-                                                      fit: BoxFit.cover,
-                                                    ),
+                                                        child: Image.network(
+                                                          'https://picsum.photos/seed/503/600',
+                                                          width: 80.0,
+                                                          height: 80.0,
+                                                          fit: BoxFit.cover,
+                                                          errorBuilder: (context, error, stackTrace) {
+                                                            return Container(
+                                                              width: 80.0,
+                                                              height: 80.0,
+                                                              color: alternateColor,
+                                                              child: Icon(
+                                                                Icons.image_not_supported,
+                                                                color: secondaryTextColor,
+                                                                size: 32.0,
+                                                              ),
+                                                            );
+                                                          },
+                                                          loadingBuilder: (context, child, loadingProgress) {
+                                                            if (loadingProgress == null) return child;
+                                                            return Container(
+                                                              width: 80.0,
+                                                              height: 80.0,
+                                                              color: alternateColor,
+                                                              child: Center(
+                                                                child: CircularProgressIndicator(
+                                                                  value: loadingProgress.expectedTotalBytes != null
+                                                                      ? loadingProgress.cumulativeBytesLoaded /
+                                                                          loadingProgress.expectedTotalBytes!
+                                                                      : null,
+                                                                  color: primaryColor,
+                                                                  strokeWidth: 2.0,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      );
+                                                    },
                                                   ),
                                                 ),
                                                 Expanded(
@@ -691,16 +730,55 @@ class _OrderDetailPageWidgetState extends State<OrderDetailPageWidget>
                                                   padding: EdgeInsetsDirectional
                                                       .fromSTEB(
                                                           12.0, 0.0, 0.0, 0.0),
-                                                  child: ClipRRect(
-                                                    borderRadius:
+                                                  child: Builder(
+                                                    builder: (context) {
+                                                      // Cache theme colors
+                                                      final alternateColor = FlutterFlowTheme.of(context).alternate;
+                                                      final secondaryTextColor = FlutterFlowTheme.of(context).secondaryText;
+                                                      final primaryColor = FlutterFlowTheme.of(context).primary;
+
+                                                      return ClipRRect(
+                                                        borderRadius:
                                                         BorderRadius.circular(
                                                             0.0),
-                                                    child: Image.network(
-                                                      'https://picsum.photos/seed/503/600',
-                                                      width: 80.0,
-                                                      height: 80.0,
-                                                      fit: BoxFit.cover,
-                                                    ),
+                                                        child: Image.network(
+                                                          'https://picsum.photos/seed/503/600',
+                                                          width: 80.0,
+                                                          height: 80.0,
+                                                          fit: BoxFit.cover,
+                                                          errorBuilder: (context, error, stackTrace) {
+                                                            return Container(
+                                                              width: 80.0,
+                                                              height: 80.0,
+                                                              color: alternateColor,
+                                                              child: Icon(
+                                                                Icons.image_not_supported,
+                                                                color: secondaryTextColor,
+                                                                size: 32.0,
+                                                              ),
+                                                            );
+                                                          },
+                                                          loadingBuilder: (context, child, loadingProgress) {
+                                                            if (loadingProgress == null) return child;
+                                                            return Container(
+                                                              width: 80.0,
+                                                              height: 80.0,
+                                                              color: alternateColor,
+                                                              child: Center(
+                                                                child: CircularProgressIndicator(
+                                                                  value: loadingProgress.expectedTotalBytes != null
+                                                                      ? loadingProgress.cumulativeBytesLoaded /
+                                                                          loadingProgress.expectedTotalBytes!
+                                                                      : null,
+                                                                  color: primaryColor,
+                                                                  strokeWidth: 2.0,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      );
+                                                    },
                                                   ),
                                                 ),
                                                 Expanded(
@@ -831,16 +909,55 @@ class _OrderDetailPageWidgetState extends State<OrderDetailPageWidget>
                                                   padding: EdgeInsetsDirectional
                                                       .fromSTEB(
                                                           12.0, 0.0, 0.0, 0.0),
-                                                  child: ClipRRect(
-                                                    borderRadius:
+                                                  child: Builder(
+                                                    builder: (context) {
+                                                      // Cache theme colors
+                                                      final alternateColor = FlutterFlowTheme.of(context).alternate;
+                                                      final secondaryTextColor = FlutterFlowTheme.of(context).secondaryText;
+                                                      final primaryColor = FlutterFlowTheme.of(context).primary;
+
+                                                      return ClipRRect(
+                                                        borderRadius:
                                                         BorderRadius.circular(
                                                             0.0),
-                                                    child: Image.network(
-                                                      'https://picsum.photos/seed/503/600',
-                                                      width: 80.0,
-                                                      height: 80.0,
-                                                      fit: BoxFit.cover,
-                                                    ),
+                                                        child: Image.network(
+                                                          'https://picsum.photos/seed/503/600',
+                                                          width: 80.0,
+                                                          height: 80.0,
+                                                          fit: BoxFit.cover,
+                                                          errorBuilder: (context, error, stackTrace) {
+                                                            return Container(
+                                                              width: 80.0,
+                                                              height: 80.0,
+                                                              color: alternateColor,
+                                                              child: Icon(
+                                                                Icons.image_not_supported,
+                                                                color: secondaryTextColor,
+                                                                size: 32.0,
+                                                              ),
+                                                            );
+                                                          },
+                                                          loadingBuilder: (context, child, loadingProgress) {
+                                                            if (loadingProgress == null) return child;
+                                                            return Container(
+                                                              width: 80.0,
+                                                              height: 80.0,
+                                                              color: alternateColor,
+                                                              child: Center(
+                                                                child: CircularProgressIndicator(
+                                                                  value: loadingProgress.expectedTotalBytes != null
+                                                                      ? loadingProgress.cumulativeBytesLoaded /
+                                                                          loadingProgress.expectedTotalBytes!
+                                                                      : null,
+                                                                  color: primaryColor,
+                                                                  strokeWidth: 2.0,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      );
+                                                    },
                                                   ),
                                                 ),
                                                 Expanded(

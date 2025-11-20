@@ -329,22 +329,61 @@ class _FavProductsPageWidgetState extends State<FavProductsPageWidget>
                                                                       .of(context)
                                                                   .secondaryBackground,
                                                             ),
-                                                            child: ClipRRect(
-                                                              borderRadius:
+                                                            child: Builder(
+                                                              builder: (context) {
+                                                                // Cache theme colors
+                                                                final alternateColor = FlutterFlowTheme.of(context).alternate;
+                                                                final secondaryTextColor = FlutterFlowTheme.of(context).secondaryText;
+                                                                final primaryColor = FlutterFlowTheme.of(context).primary;
+
+                                                                return ClipRRect(
+                                                                  borderRadius:
                                                                   BorderRadius
                                                                       .circular(
-                                                                          8.0),
-                                                              child:
+                                                                      8.0),
+                                                                  child:
                                                                   Image.network(
-                                                                getJsonField(
-                                                                  favItem,
-                                                                  r'''$.images[0]''',
-                                                                ).toString(),
-                                                                width: 100.0,
-                                                                height: 100.0,
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                              ),
+                                                                    getJsonField(
+                                                                      favItem,
+                                                                      r'''$.images[0]''',
+                                                                    ).toString(),
+                                                                    width: 100.0,
+                                                                    height: 100.0,
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                    errorBuilder: (context, error, stackTrace) {
+                                                                      return Container(
+                                                                        width: 100.0,
+                                                                        height: 100.0,
+                                                                        color: alternateColor,
+                                                                        child: Icon(
+                                                                          Icons.image_not_supported,
+                                                                          color: secondaryTextColor,
+                                                                          size: 32.0,
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                    loadingBuilder: (context, child, loadingProgress) {
+                                                                      if (loadingProgress == null) return child;
+                                                                      return Container(
+                                                                        width: 100.0,
+                                                                        height: 100.0,
+                                                                        color: alternateColor,
+                                                                        child: Center(
+                                                                          child: CircularProgressIndicator(
+                                                                            value: loadingProgress.expectedTotalBytes != null
+                                                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                                                    loadingProgress.expectedTotalBytes!
+                                                                                : null,
+                                                                            color: primaryColor,
+                                                                            strokeWidth: 2.0,
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                );
+                                                              },
                                                             ),
                                                           ),
                                                         ),
@@ -418,15 +457,57 @@ class _FavProductsPageWidgetState extends State<FavProductsPageWidget>
                                                                                 BoxDecoration(
                                                                               color: FlutterFlowTheme.of(context).secondaryBackground,
                                                                             ),
-                                                                            child:
-                                                                                ClipRRect(
-                                                                              borderRadius: BorderRadius.circular(8.0),
-                                                                              child: Image.network(
-                                                                                imageItem.toString(),
-                                                                                width: 30.0,
-                                                                                height: 30.0,
-                                                                                fit: BoxFit.cover,
-                                                                              ),
+                                                                            child: Builder(
+                                                                              builder: (context) {
+                                                                                // Cache theme colors
+                                                                                final alternateColor = FlutterFlowTheme.of(context).alternate;
+                                                                                final secondaryTextColor = FlutterFlowTheme.of(context).secondaryText;
+                                                                                final primaryColor = FlutterFlowTheme.of(context).primary;
+
+                                                                                return ClipRRect(
+                                                                                  borderRadius: BorderRadius.circular(8.0),
+                                                                                  child: Image.network(
+                                                                                    imageItem.toString(),
+                                                                                    width: 30.0,
+                                                                                    height: 30.0,
+                                                                                    fit: BoxFit.cover,
+                                                                                    errorBuilder: (context, error, stackTrace) {
+                                                                                      return Container(
+                                                                                        width: 30.0,
+                                                                                        height: 30.0,
+                                                                                        color: alternateColor,
+                                                                                        child: Icon(
+                                                                                          Icons.image_not_supported,
+                                                                                          color: secondaryTextColor,
+                                                                                          size: 16.0,
+                                                                                        ),
+                                                                                      );
+                                                                                    },
+                                                                                    loadingBuilder: (context, child, loadingProgress) {
+                                                                                      if (loadingProgress == null) return child;
+                                                                                      return Container(
+                                                                                        width: 30.0,
+                                                                                        height: 30.0,
+                                                                                        color: alternateColor,
+                                                                                        child: Center(
+                                                                                          child: SizedBox(
+                                                                                            width: 16.0,
+                                                                                            height: 16.0,
+                                                                                            child: CircularProgressIndicator(
+                                                                                              value: loadingProgress.expectedTotalBytes != null
+                                                                                                  ? loadingProgress.cumulativeBytesLoaded /
+                                                                                                      loadingProgress.expectedTotalBytes!
+                                                                                                  : null,
+                                                                                              color: primaryColor,
+                                                                                              strokeWidth: 2.0,
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                      );
+                                                                                    },
+                                                                                  ),
+                                                                                );
+                                                                              },
                                                                             ),
                                                                           ),
                                                                         );
