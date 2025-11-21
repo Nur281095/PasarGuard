@@ -777,12 +777,75 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                               ),
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
+                                    20.0, 12.0, 20.0, 12.0),
+                                child: InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () async {
+                                    context.pushNamed(
+                                      FilterProductPageWidget.routeName,
+                                      queryParameters: {
+                                        'types': serializeParam(
+                                          ['rug'],
+                                          ParamType.JSON,
+                                          isList: true,
+                                        ),
+                                      }.withoutNulls,
+                                    );
+                                  },
+                                  child: Container(
+                                    width: double.infinity,
+                                    height: 140.0,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16.0),
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xFF0B1220),
+                                          Color(0xFF1F2937),
+                                        ],
+                                        stops: [0.0, 1.0],
+                                        begin: AlignmentDirectional(-1.0, -1.0),
+                                        end: AlignmentDirectional(1.0, 1.0),
+                                      ),
+                                    ),
+                                    alignment: AlignmentDirectional(-0.85, 0.0),
+                                    child: Text(
+                                      'Sale',
+                                      style: FlutterFlowTheme.of(context)
+                                          .titleLarge
+                                          .override(
+                                            font: GoogleFonts.interTight(
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .titleLarge
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .titleLarge
+                                                      .fontStyle,
+                                            ),
+                                            color: Colors.white,
+                                            letterSpacing: 0.0,
+                                            fontWeight: FontWeight.w700,
+                                            fontStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .titleLarge
+                                                    .fontStyle,
+                                          ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
                                     20.0, 20.0, 20.0, 0.0),
                                 child: Container(
                                   width: double.infinity,
                                   decoration: BoxDecoration(),
                                   child: Text(
-                                    'Shop by Sizes',
+                                    'Products',
                                     style: FlutterFlowTheme.of(context)
                                         .titleMedium
                                         .override(
