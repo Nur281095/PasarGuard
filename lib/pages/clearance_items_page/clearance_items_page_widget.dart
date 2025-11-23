@@ -247,36 +247,54 @@ class _ClearanceItemsPageWidgetState extends State<ClearanceItemsPageWidget>
                             child: Container(
                               height: MediaQuery.sizeOf(context).height * 0.9,
                               child: FilterProductsComponentWidget(
-                                categories: getJsonField(
-                                  widget!.filter,
-                                  r'''$.cateogries''',
-                                  true,
-                                )!,
-                                collections: getJsonField(
-                                  widget!.filter,
-                                  r'''$.collections''',
-                                  true,
-                                )!,
-                                styles: getJsonField(
-                                  widget!.filter,
-                                  r'''$.styles''',
-                                  true,
-                                )!,
-                                materials: getJsonField(
-                                  widget!.filter,
-                                  r'''$.materials''',
-                                  true,
-                                )!,
-                                types: getJsonField(
-                                  widget!.filter,
-                                  r'''$.types''',
-                                  true,
-                                )!,
-                                weaves: getJsonField(
-                                  widget!.filter,
-                                  r'''$.weaves''',
-                                  true,
-                                )!,
+                                categories: widget.filter != null
+                                    ? (getJsonField(
+                                          widget.filter,
+                                          r'''$.cateogries''',
+                                          true,
+                                        ) ??
+                                        [])
+                                    : [],
+                                collections: widget.filter != null
+                                    ? (getJsonField(
+                                          widget.filter,
+                                          r'''$.collections''',
+                                          true,
+                                        ) ??
+                                        [])
+                                    : [],
+                                styles: widget.filter != null
+                                    ? (getJsonField(
+                                          widget.filter,
+                                          r'''$.styles''',
+                                          true,
+                                        ) ??
+                                        [])
+                                    : [],
+                                materials: widget.filter != null
+                                    ? (getJsonField(
+                                          widget.filter,
+                                          r'''$.materials''',
+                                          true,
+                                        ) ??
+                                        [])
+                                    : [],
+                                types: widget.filter != null
+                                    ? (getJsonField(
+                                          widget.filter,
+                                          r'''$.types''',
+                                          true,
+                                        ) ??
+                                        [])
+                                    : [],
+                                weaves: widget.filter != null
+                                    ? (getJsonField(
+                                          widget.filter,
+                                          r'''$.weaves''',
+                                          true,
+                                        ) ??
+                                        [])
+                                    : [],
                               ),
                             ),
                           ),
