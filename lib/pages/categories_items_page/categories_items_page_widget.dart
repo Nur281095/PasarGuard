@@ -733,6 +733,9 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                                                                           height: 100.0,
                                                                           fit: BoxFit
                                                                               .cover,
+                                                                          alignment:
+                                                                              Alignment
+                                                                                  .center,
                                                                           errorBuilder: (context, error, stackTrace) {
                                                                             return Container(
                                                                               width: 100.0,
@@ -927,6 +930,9 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                                                                                     width: 30.0,
                                                                                     height: 30.0,
                                                                                     fit: BoxFit.cover,
+                                                                                    alignment:
+                                                                                        Alignment
+                                                                                            .center,
                                                                                     errorBuilder: (context, error, stackTrace) {
                                                                                       return Container(
                                                                                         width: 30.0,
