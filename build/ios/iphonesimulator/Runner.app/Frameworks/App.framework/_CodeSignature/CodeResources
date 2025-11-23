@@ -10,7 +10,7 @@
 		</data>
 		<key>flutter_assets/AssetManifest.bin</key>
 		<data>
-		WT39oykoofAp4vU7/tzQurHLhQw=
+		IqnYrFOntD8giRzVaLK48cuiTSM=
 		</data>
 		<key>flutter_assets/AssetManifest.json</key>
 		<data>
@@ -68,6 +68,10 @@
 		<data>
 		u8mwhywZ78PjzaztkfN2Wi4EAyM=
 		</data>
+		<key>flutter_assets/assets/images/specia_offer.png</key>
+		<data>
+		1zgmikzLsUjNSKhGCsPmMfDscuE=
+		</data>
 		<key>flutter_assets/assets/images/tag_ico.png</key>
 		<data>
 		j/SQ5v41vprf4sbKTZwOqW1dEAQ=
@@ -98,7 +102,7 @@
 		</data>
 		<key>flutter_assets/kernel_blob.bin</key>
 		<data>
-		k2Xz7FrBA+IZrwh+5KVUGjghygU=
+		icubzQcp2/tLuR0reWo/QOmSSCw=
 		</data>
 		<key>flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
 		<data>
@@ -199,7 +203,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			xDjtFlriUZ4yFXQL9LT5PS2YElGMGrSd+arR8lL7kYQ=
+			RXaYfW1l1FIRtr0xIdzDFhxVaYtVl/i5O5SQBSe9XxA=
 			</data>
 		</dict>
 		<key>flutter_assets/AssetManifest.json</key>
@@ -300,6 +304,13 @@
 			GXa/uZ3bUkkttxaExzDhySjlbSV7TYaHD4NX0mpXxtM=
 			</data>
 		</dict>
+		<key>flutter_assets/assets/images/specia_offer.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			rHzEEHlnqg5eHbQyZ3Zl/grHiWcZFcuKBjKKxE8yJIQ=
+			</data>
+		</dict>
 		<key>flutter_assets/assets/images/tag_ico.png</key>
 		<dict>
 			<key>hash2</key>
@@ -353,7 +364,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			VwuB187BIqHraL2kb2lDlztt9QV2hQXQCtL9Mu+pIco=
+			OLrm9AYg+8uyy9jeXo/GISWmi8ifcsRRpBamr3DBRpc=
 			</data>
 		</dict>
 		<key>flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
