@@ -32,6 +32,14 @@ class _ProductMoreDetailPageWidgetState
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  String _stripHtmlTags(String? rawText) {
+    if (rawText == null) {
+      return '';
+    }
+
+    return rawText.replaceAll(RegExp(r'<[^>]*>'), '').trim();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -954,14 +962,17 @@ class _ProductMoreDetailPageWidgetState
                                         .secondaryBackground,
                                   ),
                                   child: Text(
-                                    getJsonField(
-                                      PasargadrugsGroup.productDetailCall
-                                          .product(
-                                        productMoreDetailPageProductDetailResponse
-                                            .jsonBody,
-                                      ),
-                                      r'''$.detail''',
-                                    ).toString(),
+                                    _stripHtmlTags(
+                                      getJsonField(
+                                        PasargadrugsGroup.productDetailCall
+                                            .product(
+                                          productMoreDetailPageProductDetailResponse
+                                              .jsonBody,
+                                        ),
+                                        r'''$.detail''',
+                                      )
+                                          .toString(),
+                                    ),
                                     textAlign: TextAlign.start,
                                     style: FlutterFlowTheme.of(context)
                                         .bodyMedium
