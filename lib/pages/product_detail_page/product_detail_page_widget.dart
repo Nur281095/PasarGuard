@@ -50,6 +50,13 @@ class _ProductDetailPageWidgetState extends State<ProductDetailPageWidget>
     }
     return s;
   }
+  String _stripHtmlTags(String? rawText) {
+    if (rawText == null) {
+      return '';
+    }
+
+    return rawText.replaceAll(RegExp(r'<[^>]*>'), '').trim();
+  }
 
   @override
   void initState() {
@@ -636,16 +643,18 @@ class _ProductDetailPageWidgetState extends State<ProductDetailPageWidget>
                                                 child: Container(
                                                   width: double.infinity,
                                                   decoration: BoxDecoration(),
-                                                  child: Text(
-                                                    getJsonField(
-                                                      PasargadrugsGroup
-                                                          .productDetailCall
-                                                          .product(
-                                                        productDetailPageProductDetailResponse
-                                                            .jsonBody,
+                                                    child: Text(
+                                                      _stripHtmlTags(
+                                                        getJsonField(
+                                                          PasargadrugsGroup.productDetailCall
+                                                              .product(
+                                                            productDetailPageProductDetailResponse
+                                                                .jsonBody,
+                                                          ),
+                                                          r'''$.detail''',
+                                                        )
+                                                            .toString(),
                                                       ),
-                                                      r'''$.detail''',
-                                                    ).toString(),
                                                     style: FlutterFlowTheme.of(
                                                         context)
                                                         .bodyMedium
