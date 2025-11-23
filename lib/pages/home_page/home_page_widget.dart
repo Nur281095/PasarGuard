@@ -808,42 +808,52 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                                       height: 140.0,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(16.0),
-                                      gradient: const LinearGradient(
-                                        colors: [
-                                          Color(0xFF0B1220),
-                                          Color(0xFF1F2937),
-                                        ],
-                                        stops: [0.0, 1.0],
-                                        begin: AlignmentDirectional(-1.0, -1.0),
-                                        end: AlignmentDirectional(1.0, 1.0),
-                                      ),
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            Colors.black,
+                                            Colors.black.withOpacity(0.6),
+                                          ],
+                                          stops: [0.0, 1.0],
+                                          begin: AlignmentDirectional(-1.0, -1.0),
+                                          end: AlignmentDirectional(1.0, 1.0),
+                                        ),
                                       ),
                                       alignment: AlignmentDirectional(-0.85, 0.0),
-                                      child: Text(
-                                        'Sale',
-                                        style: FlutterFlowTheme.of(context)
-                                          .titleLarge
-                                          .override(
-                                            font: GoogleFonts.interTight(
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .titleLarge
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .titleLarge
-                                                      .fontStyle,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            // Sale Text on Left
+                                            Text(
+                                              'Sale',
+                                              style: FlutterFlowTheme.of(context)
+                                                  .titleLarge
+                                                  .override(
+                                                font: GoogleFonts.interTight(
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                                color: Colors.white,
+                                                letterSpacing: 0.0,
+                                                fontWeight: FontWeight.w700,
+                                              ),
                                             ),
-                                            color: Colors.white,
-                                            letterSpacing: 0.0,
-                                            fontWeight: FontWeight.w700,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .titleLarge
-                                                    .fontStyle,
+                                            // Sale Icon on Right
+                                            Container(
+                                              padding: const EdgeInsets.all(12.0),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white.withOpacity(0.0),
+                                              ),
+                                              child: Image.asset(
+                                                  'assets/images/specia_offer.png',
+                                                  width: 150,
+                                                  height: 75
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
                                 ),
                               ),
                               Padding(
@@ -887,7 +897,7 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                                         children: [
                                           // Sale Text on Left
                                           Text(
-                                            'Sale',
+                                            'Clearance',
                                             style: FlutterFlowTheme.of(context)
                                                 .titleLarge
                                                 .override(
