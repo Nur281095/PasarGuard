@@ -21,6 +21,8 @@ class PasargadrugsGroup {
   static RegisterCall registerCall = RegisterCall();
   static HomeCall homeCall = HomeCall();
   static ProductsCall productsCall = ProductsCall();
+  static ClearanceProductsCall clearanceProductsCall =
+      ClearanceProductsCall();
   static ProductsCopyCall productsCopyCall = ProductsCopyCall();
   static ProductDetailCall productDetailCall = ProductDetailCall();
   static GetFavouritesCall getFavouritesCall = GetFavouritesCall();
@@ -409,6 +411,60 @@ class ProductsCall {
       .map((x) => castToType<String>(x))
       .withoutNulls
       .toList();
+}
+
+class ClearanceProductsCall {
+  Future<ApiCallResponse> call({
+    String? token = 'C3VWCG9YDCS0QG5VYMXLBWV0CMLJLMNVBQ==-67EF326E89F57',
+    int? categories,
+    int? style,
+    String? shape = '',
+    int? collection,
+    int? material,
+    int? color,
+    String? type = '',
+    String? search = '',
+    String? size = '',
+  }) async {
+    final baseUrl = PasargadrugsGroup.getBaseUrl();
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'clearanceProducts',
+      apiUrl: '${baseUrl}/products/clearance',
+      callType: ApiCallType.GET,
+      headers: {
+        'Authorization': '${token}',
+      },
+      params: {
+        'categories': categories,
+        'style': style,
+        'shape': shape,
+        'collection': collection,
+        'material': material,
+        'color': color,
+        'type': type,
+        'search': search,
+        'size': size,
+      },
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  List? products(dynamic response) => getJsonField(
+        response,
+        r'''$.data.products''',
+        true,
+      )
+          as List?;
+  String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
 }
 
 class ProductsCopyCall {
