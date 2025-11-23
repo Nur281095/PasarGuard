@@ -38,6 +38,8 @@ const debugRouteLinkMap = {
       'https://app.flutterflow.io/project/pasargad-82dm1q?tab=uiBuilder&page=MyOrdersPage',
   '/categoriesItemsPage':
       'https://app.flutterflow.io/project/pasargad-82dm1q?tab=uiBuilder&page=CategoriesItemsPage',
+  '/clearanceItemsPage':
+      'https://app.flutterflow.io/project/pasargad-82dm1q?tab=uiBuilder&page=ClearanceItemsPage',
   '/productDetailPage':
       'https://app.flutterflow.io/project/pasargad-82dm1q?tab=uiBuilder&page=ProductDetailPage',
   '/productMoreDetailPage':
@@ -170,6 +172,24 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: CategoriesItemsPageWidget.routeName,
           path: CategoriesItemsPageWidget.routePath,
           builder: (context, params) => CategoriesItemsPageWidget(
+            catID: params.getParam(
+              'catID',
+              ParamType.int,
+            ),
+            navTitle: params.getParam(
+              'navTitle',
+              ParamType.String,
+            ),
+            filter: params.getParam(
+              'filter',
+              ParamType.JSON,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: ClearanceItemsPageWidget.routeName,
+          path: ClearanceItemsPageWidget.routePath,
+          builder: (context, params) => ClearanceItemsPageWidget(
             catID: params.getParam(
               'catID',
               ParamType.int,

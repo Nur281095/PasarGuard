@@ -7,6 +7,8 @@ export '/pages/my_orders_page/my_orders_page_widget.dart'
     show MyOrdersPageWidget;
 export '/pages/categories_items_page/categories_items_page_widget.dart'
     show CategoriesItemsPageWidget;
+export '/pages/clearance_items_page/clearance_items_page_widget.dart'
+    show ClearanceItemsPageWidget;
 export '/pages/product_detail_page/product_detail_page_widget.dart'
     show ProductDetailPageWidget;
 export '/pages/product_more_detail_page/product_more_detail_page_widget.dart'
