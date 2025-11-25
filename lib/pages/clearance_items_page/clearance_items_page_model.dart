@@ -143,14 +143,6 @@ class ClearanceItemsPageModel
                 'reference=ShgKEAoGZmlsdGVyEgZ2cTI2OG5yBAgJIABQAVoGZmlsdGVy',
             name: 'dynamic',
             nullable: true,
-          ),
-          'collectionId': debugSerializeParam(
-            widget?.collectionId,
-            ParamType.int,
-            link:
-                'https://app.flutterflow.io/project/pasargad-82dm1q?tab=uiBuilder&page=ClearanceItemsPage',
-            name: 'int',
-            nullable: true,
           )
         }.withoutNulls,
         localStates: {
