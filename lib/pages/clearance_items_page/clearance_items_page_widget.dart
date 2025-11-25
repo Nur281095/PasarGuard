@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 import 'clearance_items_page_model.dart';
 export 'clearance_items_page_model.dart';
+import '/flutter_flow/price_helpers.dart';
 
 class ClearanceItemsPageWidget extends StatefulWidget {
   const ClearanceItemsPageWidget({
@@ -80,6 +81,11 @@ class _ClearanceItemsPageWidgetState extends State<ClearanceItemsPageWidget>
       final typeFilter = widget.filter != null
           ? castToType<String>(getJsonField(widget.filter, r'''$.type'''))
           : null;
+
+      debugPrint('>>> productsCall params:');
+      debugPrint('  shape: ${shapeFilter ?? ''}');
+      debugPrint('  size: ${sizeFilter ?? ''}');
+      debugPrint('  type: ${typeFilter ?? ''}');
 
       _model.productApiResult =
           await PasargadrugsGroup.clearanceProductsCall.call(
@@ -905,21 +911,53 @@ class _ClearanceItemsPageWidgetState extends State<ClearanceItemsPageWidget>
                                                                               alignment: AlignmentDirectional(
                                                                                   1.0,
                                                                                   1.0),
-                                                                              child:
-                                                                              Text(
-                                                                                '\$${getJsonField(
-                                                                                  productItem,
-                                                                                  r'''$.price''',
-                                                                                ).toString()}',
-                                                                                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                                                  font: GoogleFonts.inter(
-                                                                                    fontWeight: FontWeight.w500,
-                                                                                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                                                                                  ),
-                                                                                  letterSpacing: 0.0,
-                                                                                  fontWeight: FontWeight.w500,
-                                                                                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                                                                                ),
+                                                                              child: Builder(
+                                                                                builder: (context) {
+                                                                                  final currentPrice = PriceHelpers.parsePrice(
+                                                                                    getJsonField(productItem, r'''$.price'''),
+                                                                                  );
+                                                                                  
+                                                                                  final isSale = PriceHelpers.isOnSale(
+                                                                                    getJsonField(productItem, r'''$.is_sale'''),
+                                                                                  );
+                                                                                  
+                                                                                  final saleValue = PriceHelpers.parseInt(
+                                                                                    getJsonField(productItem, r'''$.sale_value'''),
+                                                                                  ).toDouble();
+                                                                                  
+                                                                                  final originalPrice = (isSale && saleValue > 0)
+                                                                                      ? PriceHelpers.calculateOriginalPrice(currentPrice, saleValue)
+                                                                                      : null;
+                                                                                  
+                                                                                  return PriceDisplay(
+                                                                                    currentPrice: currentPrice,
+                                                                                    originalPrice: originalPrice,
+                                                                                    currentPriceStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                      font: GoogleFonts.inter(
+                                                                                        fontWeight: FontWeight.w600,
+                                                                                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                                                      ),
+                                                                                      color: FlutterFlowTheme.of(context).primaryText,
+                                                                                      fontSize: 16.0,
+                                                                                      letterSpacing: 0.0,
+                                                                                      fontWeight: FontWeight.w600,
+                                                                                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                                                    ),
+                                                                                    originalPriceStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                      font: GoogleFonts.inter(
+                                                                                        fontWeight: FontWeight.w400,
+                                                                                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                                                      ),
+                                                                                      color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                      fontSize: 13.0,
+                                                                                      letterSpacing: 0.0,
+                                                                                      fontWeight: FontWeight.w400,
+                                                                                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                                                    ),
+                                                                                    spacing: 6.0,
+                                                                                    axis: Axis.vertical,
+                                                                                  );
+                                                                                },
                                                                               ),
                                                                             ),
                                                                             Align(

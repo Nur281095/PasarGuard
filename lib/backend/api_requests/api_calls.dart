@@ -321,6 +321,19 @@ class ProductsCall {
   }) async {
     final baseUrl = PasargadrugsGroup.getBaseUrl();
 
+    // Build params map, only including non-null and non-empty values
+    final params = <String, dynamic>{};
+    
+    if (categories != null) params['categories'] = categories;
+    if (style != null) params['style'] = style;
+    if (shape != null && shape.isNotEmpty) params['shape'] = shape;
+    if (collection != null) params['collection'] = collection;
+    if (material != null) params['material'] = material;
+    if (color != null) params['color'] = color;
+    if (type != null && type.isNotEmpty) params['type'] = type;
+    if (search != null && search.isNotEmpty) params['search'] = search;
+    if (size != null && size.isNotEmpty) params['size'] = size;
+
     return ApiManager.instance.makeApiCall(
       callName: 'products',
       apiUrl: '${baseUrl}/products',
@@ -328,17 +341,7 @@ class ProductsCall {
       headers: {
         'Authorization': '${token}',
       },
-      params: {
-        'categories': categories,
-        'style': style,
-        'shape': shape,
-        'collection': collection,
-        'material': material,
-        'color': color,
-        'type': type,
-        'search': search,
-        'size': size,
-      },
+      params: params,
       returnBody: true,
       encodeBodyUtf8: false,
       decodeUtf8: false,
@@ -428,6 +431,19 @@ class ClearanceProductsCall {
   }) async {
     final baseUrl = PasargadrugsGroup.getBaseUrl();
 
+    // Build params map, only including non-null and non-empty values
+    final params = <String, dynamic>{};
+    
+    if (categories != null) params['categories'] = categories;
+    if (style != null) params['style'] = style;
+    if (shape != null && shape.isNotEmpty) params['shape'] = shape;
+    if (collection != null) params['collection'] = collection;
+    if (material != null) params['material'] = material;
+    if (color != null) params['color'] = color;
+    if (type != null && type.isNotEmpty) params['type'] = type;
+    if (search != null && search.isNotEmpty) params['search'] = search;
+    if (size != null && size.isNotEmpty) params['size'] = size;
+
     return ApiManager.instance.makeApiCall(
       callName: 'clearanceProducts',
       apiUrl: '${baseUrl}/products/clearance',
@@ -435,17 +451,7 @@ class ClearanceProductsCall {
       headers: {
         'Authorization': '${token}',
       },
-      params: {
-        'categories': categories,
-        'style': style,
-        'shape': shape,
-        'collection': collection,
-        'material': material,
-        'color': color,
-        'type': type,
-        'search': search,
-        'size': size,
-      },
+      params: params,
       returnBody: true,
       encodeBodyUtf8: false,
       decodeUtf8: false,
@@ -480,6 +486,12 @@ class ProductsCopyCall {
   }) async {
     final baseUrl = PasargadrugsGroup.getBaseUrl();
 
+    // Build params map, only including non-null values
+    final params = <String, dynamic>{};
+    
+    if (categories != null) params['categories'] = categories;
+    if (style != null) params['style'] = style;
+
     return ApiManager.instance.makeApiCall(
       callName: 'products Copy',
       apiUrl: '${baseUrl}/products',
@@ -487,10 +499,7 @@ class ProductsCopyCall {
       headers: {
         'Authorization': '${token}',
       },
-      params: {
-        'categories': categories,
-        'style': style,
-      },
+      params: params,
       returnBody: true,
       encodeBodyUtf8: false,
       decodeUtf8: false,

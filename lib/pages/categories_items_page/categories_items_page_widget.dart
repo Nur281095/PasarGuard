@@ -14,7 +14,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 import 'categories_items_page_model.dart';
-export 'categories_items_page_model.dart';
+import 'dart:async';
+import 'package:flutter/scheduler.dart';
+import '/flutter_flow/price_helpers.dart';
 
 class CategoriesItemsPageWidget extends StatefulWidget {
   const CategoriesItemsPageWidget({
@@ -41,53 +43,110 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
   late CategoriesItemsPageModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _isLoadingCart = false;
 
   @override
   void initState() {
     super.initState();
     _model = createModel(context, () => CategoriesItemsPageModel());
-
+    setState(() {
+      _isLoadingCart = true;
+    });
     // On page load action.
+    _scheduleInitialProductsLoad();
+
+    _model.searchFTextController ??= TextEditingController()
+      ..addListener(() {
+        debugLogWidgetClass(_model);
+      });
+    _model.searchFFocusNode ??= FocusNode();
+  }
+
+  Future<void> _scheduleInitialProductsLoad() async {
+    // Optional small delay – mirror cart load behavior
+    await Future.delayed(const Duration(milliseconds: 400));
+
+    final completer = Completer<void>();
+
     SchedulerBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) {
+        if (!completer.isCompleted) completer.complete();
+        return;
+      }
+
+      // Cache widget values immediately after mounted check
+      final filterJson = widget.filter;
+      final catId = widget.catID;
+
       _model.isLoading = true;
       safeSetState(() {});
 
-      // Initialize filters with size and type from widget.filter if provided
-      if (widget.filter != null) {
-        final sizeFromWidget = castToType<String>(getJsonField(widget.filter, r'''$.size'''));
-        final typeFromWidget = castToType<String>(getJsonField(widget.filter, r'''$.type'''));
-        if (sizeFromWidget != null || typeFromWidget != null) {
+      // Initialize filters with size, type, and colID from widget.filter if provided
+      if (filterJson != null) {
+        final sizeFromWidget =
+        castToType<String>(getJsonField(filterJson, r'''$.size'''));
+        final typeFromWidget =
+        castToType<String>(getJsonField(filterJson, r'''$.type'''));
+        final colIDFromWidget =
+        getJsonField(filterJson, r'''$.colID''');
+
+        if (sizeFromWidget != null ||
+            typeFromWidget != null ||
+            colIDFromWidget != null) {
           final initialFilters = <String, dynamic>{};
+
           if (sizeFromWidget != null) {
             initialFilters['size'] = sizeFromWidget;
           }
           if (typeFromWidget != null) {
             initialFilters['type'] = typeFromWidget;
           }
+          if (colIDFromWidget != null) {
+            initialFilters['colID'] = colIDFromWidget;
+          }
+
           _model.filters = initialFilters;
         }
       }
 
       // Extract filter parameters if provided
-      final shapeFilter = widget.filter != null
-          ? castToType<String>(getJsonField(widget.filter, r'''$.shape'''))
+      final shapeFilter = filterJson != null
+          ? castToType<String>(getJsonField(filterJson, r'''$.shape'''))
           : null;
-      final sizeFilter = widget.filter != null
-          ? castToType<String>(getJsonField(widget.filter, r'''$.size'''))
+      final sizeFilter = filterJson != null
+          ? castToType<String>(getJsonField(filterJson, r'''$.size'''))
           : null;
-      final typeFilter = widget.filter != null
-          ? castToType<String>(getJsonField(widget.filter, r'''$.type'''))
+      final typeFilter = filterJson != null
+          ? castToType<String>(getJsonField(filterJson, r'''$.type'''))
           : null;
-
+      final collectionFilter = filterJson != null
+          ? getJsonField(filterJson, r'''$.colID''')
+          : null;
+      final searchFilter = filterJson != null
+          ? (castToType<String>(getJsonField(filterJson, r'''$.search''')) ?? '')
+          : '';
+      debugPrint('>>> productsCall params:');
+      debugPrint('  categories: $catId');
+      debugPrint('  shape: ${shapeFilter ?? ''}');
+      debugPrint('  size: ${sizeFilter ?? ''}');
+      debugPrint('  type: ${typeFilter ?? ''}');
+      debugPrint('  collection: ${collectionFilter != null ? collectionFilter.toString() : 'null'}');
+      debugPrint('  search: $searchFilter');
+      // Call API
       _model.productApiResult = await PasargadrugsGroup.productsCall.call(
-        categories: widget.catID,
+        categories: catId,
         shape: shapeFilter ?? '',
         size: sizeFilter ?? '',
         type: typeFilter ?? '',
-        search: widget.filter != null
-            ? castToType<String>(getJsonField(widget.filter, r'''$.search''')) ?? ''
-            : '',
+        collection: collectionFilter,
+        search: searchFilter,
       );
+
+      if (!mounted) {
+        _model.isLoading = false;
+        if (!completer.isCompleted) completer.complete();
+        return;
+      }
 
       if ((_model.productApiResult?.succeeded ?? true)) {
         _model.products = PasargadrugsGroup.productsCall
@@ -96,22 +155,26 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
         )!
             .toList()
             .cast<dynamic>();
+
         _model.isLoading = false;
         safeSetState(() {});
-        return;
       } else {
         _model.isLoading = false;
         safeSetState(() {});
-        return;
+      }
+      if (mounted) {
+        setState(() {
+          _isLoadingCart = false;
+        });
+      }
+      if (!completer.isCompleted) {
+        completer.complete();
       }
     });
 
-    _model.searchFTextController ??= TextEditingController()
-      ..addListener(() {
-        debugLogWidgetClass(_model);
-      });
-    _model.searchFFocusNode ??= FocusNode();
+    return completer.future;
   }
+
 
   @override
   void dispose() {
@@ -192,6 +255,7 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
               size: 30.0,
             ),
             onPressed: () async {
+              if (!_isLoadingCart)
               context.pop();
             },
           ),
@@ -304,7 +368,7 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                       );
                     },
                   ).then((value) {
-                    // Merge size and type from widget.filter if they exist
+                    // Merge size, type, and colID from widget.filter if they exist
                     if (value != null && widget.filter != null) {
                       final sizeFromWidget = castToType<String>(getJsonField(
                         widget.filter,
@@ -314,13 +378,20 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                         widget.filter,
                         r'''$.type''',
                       ));
-                      if (sizeFromWidget != null || typeFromWidget != null) {
+                      final colIDFromWidget = getJsonField(
+                        widget.filter,
+                        r'''$.colID''',
+                      );
+                      if (sizeFromWidget != null || typeFromWidget != null || colIDFromWidget != null) {
                         final mergedFilters = Map<String, dynamic>.from(value);
                         if (sizeFromWidget != null) {
                           mergedFilters['size'] = sizeFromWidget;
                         }
                         if (typeFromWidget != null) {
                           mergedFilters['type'] = typeFromWidget;
+                        }
+                        if (colIDFromWidget != null) {
+                          mergedFilters['colID'] = colIDFromWidget;
                         }
                         safeSetState(() => _model.filters = mergedFilters);
                       } else {
@@ -334,16 +405,20 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                   _shouldSetState = true;
                   _model.isLoading = true;
                   safeSetState(() {});
-                  // Extract size from filters if available (from shop by size navigation)
+                  
+                  // Extract filter parameters (preserve size, type, colID from initial navigation)
                   final sizeFromFilter = castToType<String>(getJsonField(
                     _model.filters,
                     r'''$.size''',
                   ));
-                  // Extract type from filters if available (should be 'rug' when size is provided)
                   final typeFromFilter = castToType<String>(getJsonField(
                     _model.filters,
                     r'''$.type''',
                   ));
+                  final colIDFromFilter = getJsonField(
+                    _model.filters,
+                    r'''$.colID''',
+                  );
 
                   _model.filteredApiResult =
                   await PasargadrugsGroup.productsCall.call(
@@ -355,7 +430,7 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                       _model.filters,
                       r'''$.styleID''',
                     ),
-                    collection: getJsonField(
+                    collection: colIDFromFilter ?? getJsonField(
                       _model.filters,
                       r'''$.colID''',
                     ),
@@ -1091,21 +1166,53 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                                                                               alignment: AlignmentDirectional(
                                                                                   1.0,
                                                                                   1.0),
-                                                                              child:
-                                                                              Text(
-                                                                                '\$${getJsonField(
-                                                                                  productItem,
-                                                                                  r'''$.price''',
-                                                                                ).toString()}',
-                                                                                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                                                  font: GoogleFonts.inter(
-                                                                                    fontWeight: FontWeight.w500,
-                                                                                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                                                                                  ),
-                                                                                  letterSpacing: 0.0,
-                                                                                  fontWeight: FontWeight.w500,
-                                                                                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                                                                                ),
+                                                                              child: Builder(
+                                                                                builder: (context) {
+                                                                                  final currentPrice = PriceHelpers.parsePrice(
+                                                                                    getJsonField(productItem, r'''$.price'''),
+                                                                                  );
+                                                                                  
+                                                                                  final isSale = PriceHelpers.isOnSale(
+                                                                                    getJsonField(productItem, r'''$.is_sale'''),
+                                                                                  );
+                                                                                  
+                                                                                  final saleValue = PriceHelpers.parseInt(
+                                                                                    getJsonField(productItem, r'''$.sale_value'''),
+                                                                                  ).toDouble();
+                                                                                  
+                                                                                  final originalPrice = (isSale && saleValue > 0)
+                                                                                      ? PriceHelpers.calculateOriginalPrice(currentPrice, saleValue)
+                                                                                      : null;
+                                                                                  
+                                                                                  return PriceDisplay(
+                                                                                    currentPrice: currentPrice,
+                                                                                    originalPrice: originalPrice,
+                                                                                    currentPriceStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                      font: GoogleFonts.inter(
+                                                                                        fontWeight: FontWeight.w600,
+                                                                                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                                                      ),
+                                                                                      color: FlutterFlowTheme.of(context).primaryText,
+                                                                                      fontSize: 16.0,
+                                                                                      letterSpacing: 0.0,
+                                                                                      fontWeight: FontWeight.w600,
+                                                                                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                                                    ),
+                                                                                    originalPriceStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                      font: GoogleFonts.inter(
+                                                                                        fontWeight: FontWeight.w400,
+                                                                                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                                                      ),
+                                                                                      color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                      fontSize: 13.0,
+                                                                                      letterSpacing: 0.0,
+                                                                                      fontWeight: FontWeight.w400,
+                                                                                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                                                    ),
+                                                                                    spacing: 6.0,
+                                                                                    axis: Axis.vertical,
+                                                                                  );
+                                                                                },
                                                                               ),
                                                                             ),
                                                                             Align(

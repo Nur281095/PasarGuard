@@ -704,6 +704,18 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                                           highlightColor: Colors.transparent,
                                           onTap: () async {
                                             // Navigate to products page with size filter
+                                            // Get all filters from home API and merge with size selection
+                                            final allFilters = PasargadrugsGroup.homeCall.filters(
+                                              homePageHomeResponse.jsonBody,
+                                            );
+                                            
+                                            // Create merged filter object with all filters + size selection
+                                            final filterWithSize = {
+                                              ...?allFilters,
+                                              'size': sizeItem,
+                                              'type': 'rug',
+                                            };
+                                            
                                             context.pushNamed(
                                               CategoriesItemsPageWidget.routeName,
                                               queryParameters: {
@@ -716,10 +728,7 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                                                   ParamType.String,
                                                 ),
                                                 'filter': serializeParam(
-                                                  {
-                                                    'size': sizeItem,
-                                                    'type': 'rug',
-                                                  },
+                                                  filterWithSize,
                                                   ParamType.JSON,
                                                 ),
                                               }.withoutNulls,
@@ -784,21 +793,31 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                                   hoverColor: Colors.transparent,
                                   highlightColor: Colors.transparent,
                                   onTap: () async {
+                                    // Get all filters from home API
+                                    final allFilters = PasargadrugsGroup.homeCall.filters(
+                                      homePageHomeResponse.jsonBody,
+                                    );
+                                    
+                                    // Create merged filter object with all filters + sale category
+                                    final filterWithSale = {
+                                      ...?allFilters,
+                                      'type': 'rug',
+                                    };
+                                    
                                     context.pushNamed(
                                       CategoriesItemsPageWidget.routeName,
                                       queryParameters: {
-                                        'type': serializeParam(
-                                          ['rug'],
-                                          ParamType.JSON,
-                                          isList: true,
+                                        'catID': serializeParam(
+                                          26,
+                                          ParamType.int,
                                         ),
                                         'navTitle': serializeParam(
                                           'Sale',
                                           ParamType.String,
                                         ),
-                                        'catID': serializeParam(
-                                          26,
-                                          ParamType.int,
+                                        'filter': serializeParam(
+                                          filterWithSale,
+                                          ParamType.JSON,
                                         ),
                                       }.withoutNulls,
                                     );
@@ -1652,13 +1671,31 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                                                   highlightColor:
                                                   Colors.transparent,
                                                   onTap: () async {
+                                                    // Get all filters from home API
+                                                    final allFilters = PasargadrugsGroup.homeCall.filters(
+                                                      homePageHomeResponse.jsonBody,
+                                                    );
+                                                    
+                                                    // Create merged filter object with all filters + collection selection
+                                                    final filterWithCollection = {
+                                                      ...?allFilters,
+                                                      'colID': collectionItem.id,
+                                                    };
+                                                    
                                                     context.pushNamed(
-                                                      ProductDetailPageWidget
-                                                          .routeName,
+                                                      CategoriesItemsPageWidget.routeName,
                                                       queryParameters: {
-                                                        'prodID': serializeParam(
-                                                          collectionItem.id,
+                                                        'catID': serializeParam(
+                                                          null,
                                                           ParamType.int,
+                                                        ),
+                                                        'navTitle': serializeParam(
+                                                          collectionItem.name,
+                                                          ParamType.String,
+                                                        ),
+                                                        'filter': serializeParam(
+                                                          filterWithCollection,
+                                                          ParamType.JSON,
                                                         ),
                                                       }.withoutNulls,
                                                     );

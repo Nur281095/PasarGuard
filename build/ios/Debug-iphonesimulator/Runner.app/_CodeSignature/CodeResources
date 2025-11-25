@@ -277,7 +277,7 @@
 		</dict>
 		<key>Frameworks/App.framework/App</key>
 		<data>
-		k+yxXaz3/rR3B7AfJAjikMKAE04=
+		G75qq7F2NzbgeejpPLBTkqbgaqY=
 		</data>
 		<key>Frameworks/App.framework/Info.plist</key>
 		<data>
@@ -285,7 +285,7 @@
 		</data>
 		<key>Frameworks/App.framework/_CodeSignature/CodeResources</key>
 		<data>
-		le8HHNvZ0sh0TGW16wzsD5IwiMM=
+		iGm775nbNpA2fbqYuZ64yoG+A44=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/AssetManifest.bin</key>
 		<data>
@@ -381,7 +381,7 @@
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/kernel_blob.bin</key>
 		<data>
-		F++9sJqCH9vQesGe3S2cchTbwU4=
+		DdLMatr7DksDzLQY12eqK5rAoOc=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
 		<data>
@@ -1161,7 +1161,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		VQBsfrqQEV0qlhj2Gqr8T+6lLhw=
+		0/k60iIyi6TTk7+OwfphAvNdztg=
 		</data>
 		<key>PkgInfo</key>
 		<data>
@@ -1173,7 +1173,7 @@
 		</data>
 		<key>Runner.debug.dylib</key>
 		<data>
-		2XiEVWxXfwJTcBKXsI/5CwS5oEc=
+		S+vOP0jAlOgWj5AjHwrv9telIZk=
 		</data>
 		<key>SDWebImage.bundle/Info.plist</key>
 		<data>
@@ -1669,7 +1669,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			91zi81Wg/nZ6e7QGMPG+bfdKvAP4S21OHtlupXzlH9k=
+			rGwrYZiFVN03oiAYVr2kmnb7Lb/VPx35JNxVIWMA+9M=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/Info.plist</key>
@@ -1683,7 +1683,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			+Ca3sTPJXho2Hfb8Rr3Cv5HBtHIl3+HoFZrx9vCcQKU=
+			ZPlrd+J/Mlz6BDxe230QA+uIDYrE6ey6mNw/QGp4n7Y=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/AssetManifest.bin</key>
@@ -1851,7 +1851,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			FSWwMnnS65fHZdBvUdTIPvBI6lqkRIUpYbK2NuZE7BA=
+			llabQNoh83heBicawEZZlqXzhTPwkgUaXRyL2mie2AU=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
@@ -2980,7 +2980,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			j+NOyZp5i3oEpzhni9daNpQqrIabZIqDKTX6I8HOEA0=
+			xBf6L0Ow+f6oXhWkWsKP8vnqV6U4G9wUXdV4hwXzRIQ=
 			</data>
 		</dict>
 		<key>SDWebImage.bundle/Info.plist</key>

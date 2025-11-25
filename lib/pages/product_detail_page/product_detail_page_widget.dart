@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'product_detail_page_model.dart';
+import '/flutter_flow/price_helpers.dart';
 
 class ProductDetailPageWidget extends StatefulWidget {
   const ProductDetailPageWidget({
@@ -947,32 +948,69 @@ class _ProductDetailPageWidgetState extends State<ProductDetailPageWidget>
                           children: [
                             Align(
                               alignment: AlignmentDirectional(-1.0, 0.0),
-                              child: Text(
-                                '\$${getJsonField(
-                                  PasargadrugsGroup.productDetailCall.product(
-                                    productDetailPageProductDetailResponse
-                                        .jsonBody,
-                                  ),
-                                  r'''$.price''',
-                                ).toString()}',
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                  font: GoogleFonts.inter(
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FlutterFlowTheme.of(context)
+                              child: Builder(
+                                builder: (context) {
+                                  final product = PasargadrugsGroup.productDetailCall.product(
+                                    productDetailPageProductDetailResponse.jsonBody,
+                                  );
+                                  
+                                  final currentPrice = PriceHelpers.parsePrice(
+                                    getJsonField(product, r'''$.price'''),
+                                  );
+                                  
+                                  final isSale = PriceHelpers.isOnSale(
+                                    getJsonField(product, r'''$.is_sale'''),
+                                  );
+                                  
+                                  final saleValue = PriceHelpers.parseInt(
+                                    getJsonField(product, r'''$.sale_value'''),
+                                  ).toDouble();
+                                  
+                                  final originalPrice = (isSale && saleValue > 0)
+                                      ? PriceHelpers.calculateOriginalPrice(currentPrice, saleValue)
+                                      : null;
+                                  
+                                  return PriceDisplay(
+                                    currentPrice: currentPrice,
+                                    originalPrice: originalPrice,
+                                    currentPriceStyle: FlutterFlowTheme.of(context)
                                         .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  color: FlutterFlowTheme.of(context)
-                                      .primaryText,
-                                  fontSize: 24.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
+                                        .override(
+                                      font: GoogleFonts.inter(
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .fontStyle,
+                                      ),
+                                      color: FlutterFlowTheme.of(context).primaryText,
+                                      fontSize: 24.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontStyle,
+                                    ),
+                                    originalPriceStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .override(
+                                      font: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w500,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .fontStyle,
+                                      ),
+                                      color: FlutterFlowTheme.of(context).secondaryText,
+                                      fontSize: 18.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FontWeight.w500,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontStyle,
+                                    ),
+                                    spacing: 12.0,
+                                    axis: Axis.horizontal,
+                                  );
+                                },
                               ),
                             ),
                             FFButtonWidget(
