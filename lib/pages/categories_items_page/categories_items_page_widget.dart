@@ -216,7 +216,9 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
               FlutterFlowTheme.of(context).headlineMedium.fontStyle,
             ),
           ),
-          actions: [
+          actions: widget.navTitle == "Sale"
+              ? []
+              : [
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
               child: FlutterFlowIconButton(
@@ -249,51 +251,51 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                               child: FilterProductsComponentWidget(
                                 categories: widget.filter != null
                                     ? (getJsonField(
-                                          widget.filter,
-                                          r'''$.cateogries''',
-                                          true,
-                                        ) ??
-                                        [])
+                                  widget.filter,
+                                  r'''$.cateogries''',
+                                  true,
+                                ) ??
+                                    [])
                                     : [],
                                 collections: widget.filter != null
                                     ? (getJsonField(
-                                          widget.filter,
-                                          r'''$.collections''',
-                                          true,
-                                        ) ??
-                                        [])
+                                  widget.filter,
+                                  r'''$.collections''',
+                                  true,
+                                ) ??
+                                    [])
                                     : [],
                                 styles: widget.filter != null
                                     ? (getJsonField(
-                                          widget.filter,
-                                          r'''$.styles''',
-                                          true,
-                                        ) ??
-                                        [])
+                                  widget.filter,
+                                  r'''$.styles''',
+                                  true,
+                                ) ??
+                                    [])
                                     : [],
                                 materials: widget.filter != null
                                     ? (getJsonField(
-                                          widget.filter,
-                                          r'''$.materials''',
-                                          true,
-                                        ) ??
-                                        [])
+                                  widget.filter,
+                                  r'''$.materials''',
+                                  true,
+                                ) ??
+                                    [])
                                     : [],
                                 types: widget.filter != null
                                     ? (getJsonField(
-                                          widget.filter,
-                                          r'''$.types''',
-                                          true,
-                                        ) ??
-                                        [])
+                                  widget.filter,
+                                  r'''$.types''',
+                                  true,
+                                ) ??
+                                    [])
                                     : [],
                                 weaves: widget.filter != null
                                     ? (getJsonField(
-                                          widget.filter,
-                                          r'''$.weaves''',
-                                          true,
-                                        ) ??
-                                        [])
+                                  widget.filter,
+                                  r'''$.weaves''',
+                                  true,
+                                ) ??
+                                    [])
                                     : [],
                               ),
                             ),
@@ -361,21 +363,24 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                       _model.filters,
                       r'''$.matID''',
                     ),
-                    type: typeFromFilter ?? getJsonField(
-                      _model.filters,
-                      r'''$.typeID''',
-                    ).toString(),
+                    type: typeFromFilter ??
+                        getJsonField(
+                          _model.filters,
+                          r'''$.typeID''',
+                        ).toString(),
                     shape: castToType<String>(getJsonField(
                       _model.filters,
                       r'''$.shape''',
-                    )) ?? '',
+                    )) ??
+                        '',
                     size: sizeFromFilter ?? '',
                     search: _model.searchFTextController.text.isNotEmpty
                         ? _model.searchFTextController.text
                         : (castToType<String>(getJsonField(
                       _model.filters,
                       r'''$.search''',
-                    )) ?? ''),
+                    )) ??
+                        ''),
                   );
 
                   _shouldSetState = true;

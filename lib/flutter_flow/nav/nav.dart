@@ -194,6 +194,10 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               'catID',
               ParamType.int,
             ),
+            collectionID: params.getParam(
+              'collectionID',
+              ParamType.int,
+            ),
             navTitle: params.getParam(
               'navTitle',
               ParamType.String,

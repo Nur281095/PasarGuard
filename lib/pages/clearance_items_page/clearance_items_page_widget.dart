@@ -20,11 +20,13 @@ class ClearanceItemsPageWidget extends StatefulWidget {
   const ClearanceItemsPageWidget({
     super.key,
     required this.catID,
+    required this.collectionID,
     required this.navTitle,
     this.filter,
   });
 
   final int? catID;
+  final int? collectionID;
   final String? navTitle;
   final dynamic filter;
 
@@ -217,190 +219,7 @@ class _ClearanceItemsPageWidgetState extends State<ClearanceItemsPageWidget>
             ),
           ),
           actions: [
-            Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-              child: FlutterFlowIconButton(
-                borderRadius: 8.0,
-                buttonSize: 40.0,
-                fillColor: Colors.white,
-                icon: Icon(
-                  Icons.filter_list_rounded,
-                  color: FlutterFlowTheme.of(context).primaryText,
-                  size: 30.0,
-                ),
-                onPressed: () async {
-                  var _shouldSetState = false;
-                  await showModalBottomSheet(
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    enableDrag: false,
-                    context: context,
-                    builder: (context) {
-                      return WebViewAware(
-                        child: GestureDetector(
-                          onTap: () {
-                            FocusScope.of(context).unfocus();
-                            FocusManager.instance.primaryFocus?.unfocus();
-                          },
-                          child: Padding(
-                            padding: MediaQuery.viewInsetsOf(context),
-                            child: Container(
-                              height: MediaQuery.sizeOf(context).height * 0.9,
-                              child: FilterProductsComponentWidget(
-                                categories: widget.filter != null
-                                    ? (getJsonField(
-                                          widget.filter,
-                                          r'''$.cateogries''',
-                                          true,
-                                        ) ??
-                                        [])
-                                    : [],
-                                collections: widget.filter != null
-                                    ? (getJsonField(
-                                          widget.filter,
-                                          r'''$.collections''',
-                                          true,
-                                        ) ??
-                                        [])
-                                    : [],
-                                styles: widget.filter != null
-                                    ? (getJsonField(
-                                          widget.filter,
-                                          r'''$.styles''',
-                                          true,
-                                        ) ??
-                                        [])
-                                    : [],
-                                materials: widget.filter != null
-                                    ? (getJsonField(
-                                          widget.filter,
-                                          r'''$.materials''',
-                                          true,
-                                        ) ??
-                                        [])
-                                    : [],
-                                types: widget.filter != null
-                                    ? (getJsonField(
-                                          widget.filter,
-                                          r'''$.types''',
-                                          true,
-                                        ) ??
-                                        [])
-                                    : [],
-                                weaves: widget.filter != null
-                                    ? (getJsonField(
-                                          widget.filter,
-                                          r'''$.weaves''',
-                                          true,
-                                        ) ??
-                                        [])
-                                    : [],
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ).then((value) {
-                    // Merge size and type from widget.filter if they exist
-                    if (value != null && widget.filter != null) {
-                      final sizeFromWidget = castToType<String>(getJsonField(
-                        widget.filter,
-                        r'''$.size''',
-                      ));
-                      final typeFromWidget = castToType<String>(getJsonField(
-                        widget.filter,
-                        r'''$.type''',
-                      ));
-                      if (sizeFromWidget != null || typeFromWidget != null) {
-                        final mergedFilters = Map<String, dynamic>.from(value);
-                        if (sizeFromWidget != null) {
-                          mergedFilters['size'] = sizeFromWidget;
-                        }
-                        if (typeFromWidget != null) {
-                          mergedFilters['type'] = typeFromWidget;
-                        }
-                        safeSetState(() => _model.filters = mergedFilters);
-                      } else {
-                        safeSetState(() => _model.filters = value);
-                      }
-                    } else {
-                      safeSetState(() => _model.filters = value);
-                    }
-                  });
 
-                  _shouldSetState = true;
-                  _model.isLoading = true;
-                  safeSetState(() {});
-                  // Extract size from filters if available (from shop by size navigation)
-                  final sizeFromFilter = castToType<String>(getJsonField(
-                    _model.filters,
-                    r'''$.size''',
-                  ));
-                  // Extract type from filters if available (should be 'rug' when size is provided)
-                  final typeFromFilter = castToType<String>(getJsonField(
-                    _model.filters,
-                    r'''$.type''',
-                  ));
-
-                  _model.filteredApiResult =
-                  await PasargadrugsGroup.clearanceProductsCall.call(
-                    categories: getJsonField(
-                      _model.filters,
-                      r'''$.catID''',
-                    ),
-                    style: getJsonField(
-                      _model.filters,
-                      r'''$.styleID''',
-                    ),
-                    collection: getJsonField(
-                      _model.filters,
-                      r'''$.colID''',
-                    ),
-                    material: getJsonField(
-                      _model.filters,
-                      r'''$.matID''',
-                    ),
-                    type: typeFromFilter ?? getJsonField(
-                      _model.filters,
-                      r'''$.typeID''',
-                    ).toString(),
-                    shape: castToType<String>(getJsonField(
-                      _model.filters,
-                      r'''$.shape''',
-                    )) ?? '',
-                    size: sizeFromFilter ?? '',
-                    search: _model.searchFTextController.text.isNotEmpty
-                        ? _model.searchFTextController.text
-                        : (castToType<String>(getJsonField(
-                      _model.filters,
-                      r'''$.search''',
-                    )) ?? ''),
-                  );
-
-                  _shouldSetState = true;
-                  if ((_model.productApiResult?.succeeded ?? true)) {
-                    _model.products = PasargadrugsGroup.clearanceProductsCall
-                        .products(
-                      (_model.filteredApiResult?.jsonBody ?? ''),
-                    )!
-                        .toList()
-                        .cast<dynamic>();
-                    _model.isLoading = false;
-                    safeSetState(() {});
-                    if (_shouldSetState) safeSetState(() {});
-                    return;
-                  } else {
-                    _model.isLoading = false;
-                    safeSetState(() {});
-                    if (_shouldSetState) safeSetState(() {});
-                    return;
-                  }
-
-                  if (_shouldSetState) safeSetState(() {});
-                },
-              ),
-            ),
           ],
           centerTitle: true,
           elevation: 0.0,
