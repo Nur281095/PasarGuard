@@ -22,13 +22,11 @@ class ClearanceItemsPageWidget extends StatefulWidget {
     required this.catID,
     required this.navTitle,
     this.filter,
-    this.collectionId,
   });
 
   final int? catID;
   final String? navTitle;
   final dynamic filter;
-  final int? collectionId;
 
   static String routeName = 'ClearanceItemsPage';
   static String routePath = '/clearanceItemsPage';
@@ -83,7 +81,6 @@ class _ClearanceItemsPageWidgetState extends State<ClearanceItemsPageWidget>
 
       _model.productApiResult =
           await PasargadrugsGroup.clearanceProductsCall.call(
-        collection: widget.collectionId,
         shape: shapeFilter ?? '',
         size: sizeFilter ?? '',
         type: typeFilter ?? '',
@@ -357,10 +354,9 @@ class _ClearanceItemsPageWidgetState extends State<ClearanceItemsPageWidget>
                       r'''$.styleID''',
                     ),
                     collection: getJsonField(
-                          _model.filters,
-                          r'''$.colID''',
-                        ) ??
-                        widget.collectionId,
+                      _model.filters,
+                      r'''$.colID''',
+                    ),
                     material: getJsonField(
                       _model.filters,
                       r'''$.matID''',
@@ -440,9 +436,7 @@ class _ClearanceItemsPageWidgetState extends State<ClearanceItemsPageWidget>
                                 _model.isLoading = true;
                                 safeSetState(() {});
                                 _model.productResults =
-                                await PasargadrugsGroup.clearanceProductsCall.call(
-                                  collection: widget.collectionId,
-                                );
+                                await PasargadrugsGroup.clearanceProductsCall.call();
 
                                 _shouldSetState = true;
                                 if ((_model.productResults?.succeeded ??
@@ -478,7 +472,6 @@ class _ClearanceItemsPageWidgetState extends State<ClearanceItemsPageWidget>
                             safeSetState(() {});
                             _model.productSearchResult =
                             await PasargadrugsGroup.clearanceProductsCall.call(
-                              collection: widget.collectionId,
                               search: _model.searchFTextController.text,
                             );
 
