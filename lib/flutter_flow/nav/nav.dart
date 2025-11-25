@@ -202,6 +202,10 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               'filter',
               ParamType.JSON,
             ),
+            collectionId: params.getParam(
+              'collectionId',
+              ParamType.int,
+            ),
           ),
         ),
         FFRoute(

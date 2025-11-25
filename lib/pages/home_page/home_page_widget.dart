@@ -1626,10 +1626,15 @@ class _HomePageWidgetState extends State<HomePageWidget> with RouteAware {
                                                   Colors.transparent,
                                                   onTap: () async {
                                                     context.pushNamed(
-                                                      ProductDetailPageWidget
+                                                      ClearanceItemsPageWidget
                                                           .routeName,
                                                       queryParameters: {
-                                                        'prodID': serializeParam(
+                                                        'navTitle': serializeParam(
+                                                          collectionItem.name,
+                                                          ParamType.String,
+                                                        ),
+                                                        'collectionId':
+                                                            serializeParam(
                                                           collectionItem.id,
                                                           ParamType.int,
                                                         ),
