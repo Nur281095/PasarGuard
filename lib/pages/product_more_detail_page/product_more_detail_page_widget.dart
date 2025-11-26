@@ -1,3 +1,4 @@
+import '../../core/services/user_journey_tracker.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -84,6 +85,12 @@ class _ProductMoreDetailPageWidgetState
     if (mounted && DebugFlutterFlowModelContext.maybeOf(context) == null) {
       setState(() => _model.isRouteVisible = true);
       debugLogWidgetClass(_model);
+      
+      // Track screen visit
+      UserJourneyTracker.trackScreenVisit(
+        'ProductMoreDetail',
+        screenClass: 'ProductMoreDetailPageWidget',
+      );
     }
   }
 

@@ -1,3 +1,4 @@
+import '../../core/services/user_journey_tracker.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_radio_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -89,6 +90,12 @@ class _FilterProductPageWidgetState extends State<FilterProductPageWidget>
     if (mounted && DebugFlutterFlowModelContext.maybeOf(context) == null) {
       setState(() => _model.isRouteVisible = true);
       debugLogWidgetClass(_model);
+      
+      // Track screen visit
+      UserJourneyTracker.trackScreenVisit(
+        'FilterProduct',
+        screenClass: 'FilterProductPageWidget',
+      );
     }
   }
 

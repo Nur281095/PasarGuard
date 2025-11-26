@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'core/services/app_analytics.dart';
+
 import 'auth/custom_auth/auth_util.dart';
 import 'auth/custom_auth/custom_auth_user_provider.dart';
 
@@ -22,6 +25,12 @@ void main() async {
   GoRouter.optionURLReflectsImperativeAPIs = true;
   usePathUrlStrategy();
   debugLogAppConstant();
+
+  // Initialize Firebase
+  await Firebase.initializeApp();
+  
+  // Initialize Analytics
+  await AppAnalytics().init();
 
   await FlutterFlowTheme.initialize();
 

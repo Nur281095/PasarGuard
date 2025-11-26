@@ -7,6 +7,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:ui';
 import '/index.dart';
+import '/core/services/user_journey_tracker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -103,6 +104,12 @@ class _SignupPageWidgetState extends State<SignupPageWidget> with RouteAware {
     if (mounted && DebugFlutterFlowModelContext.maybeOf(context) == null) {
       setState(() => _model.isRouteVisible = true);
       debugLogWidgetClass(_model);
+      
+      // Track screen visit
+      UserJourneyTracker.trackScreenVisit(
+        'SignUp',
+        screenClass: 'SignupPageWidget',
+      );
     }
   }
 
@@ -923,6 +930,10 @@ class _SignupPageWidgetState extends State<SignupPageWidget> with RouteAware {
                           }
                           _shouldSetState = true;
                           if (_model.formValid!) {
+                            // Track signup flow start
+                            UserJourneyTracker.trackFlowStart('SignUp');
+                            
+                            final _apiStartTime = DateTime.now();
                             _model.signupResult =
                                 await PasargadrugsGroup.registerCall.call(
                               firstName: _model.fNameFTextController.text,
@@ -934,6 +945,17 @@ class _SignupPageWidgetState extends State<SignupPageWidget> with RouteAware {
                             );
 
                             _shouldSetState = true;
+                            
+                            // Track API call
+                            final _apiDuration = DateTime.now().difference(_apiStartTime).inMilliseconds;
+                            UserJourneyTracker.trackApiCall(
+                              endpoint: '/register',
+                              method: 'POST',
+                              success: _model.signupResult?.succeeded ?? false,
+                              statusCode: _model.signupResult?.statusCode,
+                              responseTime: _apiDuration,
+                            );
+                            
                             if ((_model.signupResult?.succeeded ?? true)) {
                               FFAppState().user = UserStruct(
                                 id: PasargadrugsGroup.registerCall.userID(
@@ -980,6 +1002,26 @@ class _SignupPageWidgetState extends State<SignupPageWidget> with RouteAware {
                                     )
                                     ?.toString(),
                               );
+                              
+                              // Track successful signup
+                              final userId = PasargadrugsGroup.registerCall.userID(
+                                (_model.signupResult?.jsonBody ?? ''),
+                              );
+                              final email = PasargadrugsGroup.registerCall.email(
+                                (_model.signupResult?.jsonBody ?? ''),
+                              );
+                              final fullName = PasargadrugsGroup.registerCall.fullname(
+                                (_model.signupResult?.jsonBody ?? ''),
+                              );
+                              
+                              UserJourneyTracker.trackFlowEnd('SignUp', success: true);
+                              UserJourneyTracker.setUserId(userId?.toString());
+                              UserJourneyTracker.setUserProperties({
+                                'email': email ?? '',
+                                'full_name': fullName ?? '',
+                                'user_type': 'customer',
+                                'signup_date': DateTime.now().toIso8601String(),
+                              });
 
                               context.goNamedAuth(
                                   HomePageWidget.routeName, context.mounted);
@@ -987,12 +1029,24 @@ class _SignupPageWidgetState extends State<SignupPageWidget> with RouteAware {
                               if (_shouldSetState) safeSetState(() {});
                               return;
                             } else {
+                              // Track failed signup
+                              final msg = PasargadrugsGroup.registerCall.message(
+                                (_model.signupResult?.jsonBody ?? ''),
+                              ) ?? 'Registration failed';
+                              
+                              UserJourneyTracker.trackFlowEnd(
+                                'SignUp',
+                                success: false,
+                                details: {
+                                  'error_message': msg,
+                                  'status_code': _model.signupResult?.statusCode ?? 0,
+                                },
+                              );
+                              
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    PasargadrugsGroup.registerCall.message(
-                                      (_model.signupResult?.jsonBody ?? ''),
-                                    )!,
+                                    msg,
                                     style: TextStyle(
                                       color: FlutterFlowTheme.of(context)
                                           .primaryText,

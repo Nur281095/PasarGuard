@@ -6,6 +6,7 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:ui';
 import '/flutter_flow/custom_functions.dart' as functions;
 import '/index.dart';
+import '/core/services/user_journey_tracker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -101,6 +102,12 @@ class _ProductDetailPageWidgetState extends State<ProductDetailPageWidget>
     if (mounted && DebugFlutterFlowModelContext.maybeOf(context) == null) {
       setState(() => _model.isRouteVisible = true);
       debugLogWidgetClass(_model);
+      
+      // Track screen visit
+      UserJourneyTracker.trackScreenVisit(
+        'ProductDetail',
+        screenClass: 'ProductDetailPageWidget',
+      );
     }
   }
 

@@ -1,3 +1,4 @@
+import '../../core/services/user_journey_tracker.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -66,6 +67,12 @@ class _SplashPageWidgetState extends State<SplashPageWidget> with RouteAware {
     if (mounted && DebugFlutterFlowModelContext.maybeOf(context) == null) {
       setState(() => _model.isRouteVisible = true);
       debugLogWidgetClass(_model);
+      
+      // Track screen visit
+      UserJourneyTracker.trackScreenVisit(
+        'Splash',
+        screenClass: 'SplashPageWidget',
+      );
     }
   }
 

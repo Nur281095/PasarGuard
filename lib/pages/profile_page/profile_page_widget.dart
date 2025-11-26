@@ -1,3 +1,4 @@
+import '../../core/services/user_journey_tracker.dart';
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/backend/schema/structs/index.dart';
@@ -92,6 +93,12 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> with RouteAware {
     if (mounted && DebugFlutterFlowModelContext.maybeOf(context) == null) {
       setState(() => _model.isRouteVisible = true);
       debugLogWidgetClass(_model);
+      
+      // Track screen visit
+      UserJourneyTracker.trackScreenVisit(
+        'Profile',
+        screenClass: 'ProfilePageWidget',
+      );
     }
   }
 

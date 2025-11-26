@@ -6,6 +6,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:ui';
 import '/index.dart';
+import '/core/services/user_journey_tracker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -86,6 +87,12 @@ class _SignInPageWidgetState extends State<SignInPageWidget> with RouteAware {
     if (mounted && DebugFlutterFlowModelContext.maybeOf(context) == null) {
       setState(() => _model.isRouteVisible = true);
       debugLogWidgetClass(_model);
+      
+      // Track screen visit
+      UserJourneyTracker.trackScreenVisit(
+        'SignIn',
+        screenClass: 'SignInPageWidget',
+      );
     }
   }
 
@@ -466,6 +473,7 @@ class _SignInPageWidgetState extends State<SignInPageWidget> with RouteAware {
                             EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 20.0, 0.0),
                         child: FFButtonWidget(
                           onPressed: () async {
+                            UserJourneyTracker.trackAction('ForgotPassword');
                             await launchURL('https://pasargad.com');
                           },
                           text: 'Forgot Password?',
@@ -531,12 +539,26 @@ class _SignInPageWidgetState extends State<SignInPageWidget> with RouteAware {
                             _shouldSetState = true;
 
                             if (_model.valid == true) {
+                              // Track login flow start
+                              UserJourneyTracker.trackFlowStart('Login');
+                              
                               // ---- Call API ----
+                              final _apiStartTime = DateTime.now();
                               _model.apiResultx1h = await PasargadrugsGroup.loginCall.call(
                                 email: _model.emailFTextController.text,
                                 password: _model.passwordFTextController.text,
                               );
                               _shouldSetState = true;
+                              
+                              // Track API call
+                              final _apiDuration = DateTime.now().difference(_apiStartTime).inMilliseconds;
+                              UserJourneyTracker.trackApiCall(
+                                endpoint: '/login',
+                                method: 'POST',
+                                success: _model.apiResultx1h?.succeeded ?? false,
+                                statusCode: _model.apiResultx1h?.statusCode,
+                                responseTime: _apiDuration,
+                              );
 
                               // Helper for masking secrets in logs
                               String _mask(String? s) {
@@ -594,6 +616,15 @@ class _SignInPageWidgetState extends State<SignInPageWidget> with RouteAware {
                                   refreshToken: token,
                                   authUid: userId?.toString(),
                                 );
+                                
+                                // Track successful login
+                                UserJourneyTracker.trackFlowEnd('Login', success: true);
+                                UserJourneyTracker.setUserId(userId?.toString());
+                                UserJourneyTracker.setUserProperties({
+                                  'email': email ?? '',
+                                  'full_name': fullName ?? '',
+                                  'user_type': 'customer',
+                                });
 
                                 _navigate = () =>
                                     context.goNamedAuth(HomePageWidget.routeName, context.mounted);
@@ -611,6 +642,16 @@ class _SignInPageWidgetState extends State<SignInPageWidget> with RouteAware {
                                 debugPrint('API statusCode: ${_model.apiResultx1h?.statusCode}');
                                 debugPrint('Message: $msg');
                                 debugPrint('========================');
+                                
+                                // Track failed login
+                                UserJourneyTracker.trackFlowEnd(
+                                  'Login',
+                                  success: false,
+                                  details: {
+                                    'error_message': msg,
+                                    'status_code': _model.apiResultx1h?.statusCode ?? 0,
+                                  },
+                                );
 
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -734,6 +775,7 @@ class _SignInPageWidgetState extends State<SignInPageWidget> with RouteAware {
                               mouseCursor: SystemMouseCursors.click,
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () async {
+                                  UserJourneyTracker.trackAction('SignUpNavigate');
                                   context.pushNamed(SignupPageWidget.routeName);
                                 },
                             )

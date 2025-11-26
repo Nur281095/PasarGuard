@@ -8,6 +8,7 @@ import 'dart:ui';
 import 'dart:convert'; // <-- add this for pretty JSON logs
 import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
+import '/core/services/user_journey_tracker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -237,6 +238,12 @@ class _AddAddressPageWidgetState extends State<AddAddressPageWidget>
     if (mounted && DebugFlutterFlowModelContext.maybeOf(context) == null) {
       setState(() => _model.isRouteVisible = true);
       debugLogWidgetClass(_model);
+      
+      // Track screen visit
+      UserJourneyTracker.trackScreenVisit(
+        'AddAddress',
+        screenClass: 'AddAddressPageWidget',
+      );
     }
   }
 

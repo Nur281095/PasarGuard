@@ -1,3 +1,4 @@
+import '../../core/services/user_journey_tracker.dart';
 import '/auth/custom_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -125,6 +126,12 @@ class _OrderDetailPageWidgetState extends State<OrderDetailPageWidget>
     if (mounted && DebugFlutterFlowModelContext.maybeOf(context) == null) {
       setState(() => _model.isRouteVisible = true);
       debugLogWidgetClass(_model);
+      
+      // Track screen visit
+      UserJourneyTracker.trackScreenVisit(
+        'OrderDetail',
+        screenClass: 'OrderDetailPageWidget',
+      );
     }
   }
 

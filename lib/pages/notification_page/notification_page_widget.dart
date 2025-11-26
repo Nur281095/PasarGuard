@@ -1,3 +1,4 @@
+import '../../core/services/user_journey_tracker.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -68,6 +69,12 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget>
     if (mounted && DebugFlutterFlowModelContext.maybeOf(context) == null) {
       setState(() => _model.isRouteVisible = true);
       debugLogWidgetClass(_model);
+      
+      // Track screen visit
+      UserJourneyTracker.trackScreenVisit(
+        'Notification',
+        screenClass: 'NotificationPageWidget',
+      );
     }
   }
 
