@@ -244,24 +244,6 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
 		};
-		5397634A04ED846D17C67ADA /* Square SDK Setup */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Square SDK Setup";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "FRAMEWORKS=\"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\n\n# Square In-App Payments SDK setup\nif [ -f \"${FRAMEWORKS}/SquareInAppPaymentsSDK.framework/setup\" ]; then\n  echo \"Running SquareInAppPaymentsSDK setup...\"\n  \"${FRAMEWORKS}/SquareInAppPaymentsSDK.framework/setup\" || echo \"Warning: SquareInAppPaymentsSDK setup failed\"\nelse\n  echo \"Warning: SquareInAppPaymentsSDK setup script not found\"\nfi\n\n# Square Buyer Verification (3DS) SDK setup\nif [ -f \"${FRAMEWORKS}/SquareBuyerVerificationSDK.framework/setup\" ]; then\n  echo \"Running SquareBuyerVerificationSDK setup...\"\n  \"${FRAMEWORKS}/SquareBuyerVerificationSDK.framework/setup\" || echo \"Warning: SquareBuyerVerificationSDK setup failed\"\nelse\n  echo \"Warning: SquareBuyerVerificationSDK setup script not found\"\nfi\n\nexit 0\n";
-		};
 		58FC3000FD3CCDCDEC99F3AF /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -270,9 +252,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -320,9 +306,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
