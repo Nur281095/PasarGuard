@@ -100,11 +100,13 @@ dependencies:
   webview_flutter_android: 4.7.0
   webview_flutter_platform_interface: 2.13.1
   webview_flutter_wkwebview: 3.22.0
-  webviewx_plus: 
+  webviewx_plus:
     git:
       url: https://github.com/FlutterFlow/webviewx_plus.git
       ref: 4f84ece5e06d52643c5d844f41880baf8440c584
   xml: 6.5.0
+  firebase_core: ^3.6.0
+  firebase_analytics: ^11.3.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

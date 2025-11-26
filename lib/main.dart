@@ -1,6 +1,8 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
@@ -13,15 +15,33 @@ import 'flutter_flow/flutter_flow_util.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'flutter_flow/nav/nav.dart';
 import 'index.dart';
+import 'services/firebase_analytics_service.dart';
 
 import 'dart:async';
 import 'package:easy_debounce/easy_debounce.dart';
+
+Future<void> _initializeFirebase() async {
+  if (kIsWeb) {
+    debugPrint('Firebase Analytics initialization skipped on web.');
+    return;
+  }
+
+  try {
+    await Firebase.initializeApp();
+    await FirebaseAnalyticsService.instance.initialize();
+  } catch (error, stackTrace) {
+    debugPrint('Firebase initialization failed: $error');
+    debugPrintStack(stackTrace: stackTrace);
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   GoRouter.optionURLReflectsImperativeAPIs = true;
   usePathUrlStrategy();
   debugLogAppConstant();
+
+  await _initializeFirebase();
 
   await FlutterFlowTheme.initialize();
 
@@ -147,6 +167,19 @@ class _MyAppState extends State<MyApp> {
       ..listen((user) {
         _appStateNotifier.update(user);
         debugLogAuthenticatedUser();
+        if (user.loggedIn) {
+          FirebaseAnalyticsService.instance.setUserId(user.uid);
+          FirebaseAnalyticsService.instance.logEvent(
+            'user_login',
+            parameters: const {'source': 'auth_stream'},
+          );
+        } else {
+          FirebaseAnalyticsService.instance.setUserId(null);
+          FirebaseAnalyticsService.instance.logEvent(
+            'user_logout',
+            parameters: const {'source': 'auth_stream'},
+          );
+        }
       });
 
     Future.delayed(
@@ -158,6 +191,10 @@ class _MyAppState extends State<MyApp> {
       if (mounted) {
         debugLogGlobalProperty(
           context,
+          routePath: getRoute(),
+          routeStack: getRouteStack(),
+        );
+        FirebaseAnalyticsService.instance.logRouteChange(
           routePath: getRoute(),
           routeStack: getRouteStack(),
         );
@@ -241,6 +278,13 @@ class _NavBarPageState extends State<NavBarPage> {
         onTap: (i) => safeSetState(() {
           _currentPage = null;
           _currentPageName = tabs.keys.toList()[i];
+          logFirebaseEvent(
+            'bottom_nav_tap',
+            parameters: {
+              'selected_tab': _currentPageName,
+              'tab_index': i,
+            },
+          );
         }),
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         selectedItemColor: FlutterFlowTheme.of(context).primaryText,
