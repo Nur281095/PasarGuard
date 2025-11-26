@@ -6,7 +6,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 import '/backend/schema/structs/index.dart';
-import '../../services/firebase_analytics_service.dart';
 
 import '/auth/custom_auth/custom_auth_user_provider.dart';
 
@@ -359,11 +358,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
-      observers: [
-        routeObserver,
-        if (FirebaseAnalyticsService.instance.observer != null)
-          FirebaseAnalyticsService.instance.observer!,
-      ],
+      observers: [routeObserver],
     );
 
 extension NavParamExtensions on Map<String, String?> {
