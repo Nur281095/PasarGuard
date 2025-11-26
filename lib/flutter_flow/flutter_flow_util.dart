@@ -12,7 +12,6 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 
 import 'debug_util.dart';
-import '../services/firebase_analytics_service.dart';
 
 export 'debug_util.dart';
 
@@ -39,26 +38,6 @@ export 'custom_icons.dart' show FFIcons;
 export 'nav/nav.dart';
 
 final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
-
-Future<void> logFirebaseEvent(
-  String eventName, {
-  Map<String, Object?>? parameters,
-}) async {
-  await FirebaseAnalyticsService.instance
-      .logEvent(eventName, parameters: parameters);
-}
-
-Future<void> logFirebaseScreenView(
-  String screenName, {
-  String? screenClass,
-  Map<String, Object?>? parameters,
-}) async {
-  await FirebaseAnalyticsService.instance.logScreenView(
-    screenName: screenName,
-    screenClass: screenClass,
-    parameters: parameters,
-  );
-}
 
 T valueOrDefault<T>(T? value, T defaultValue) =>
     (value is String && value.isEmpty) || value == null ? defaultValue : value;
