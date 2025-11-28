@@ -12,7 +12,7 @@
 		44A671D52BC7AFBA0042F967 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 44A671D42BC7AFBA0042F967 /* PrivacyInfo.xcprivacy */; };
 		6436409A27A31CD800820AF7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6436409C27A31CD800820AF7 /* InfoPlist.strings */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
-		770A52AFC6C67591105D0369 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CBF7E750B7062BC2AFC3153 /* Pods_Runner.framework */; };
+		80F67F5DAB7AC9760CD894FC /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C1B16CAA671EB807E06BAC8 /* Pods_Runner.framework */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -34,12 +34,14 @@
 /* Begin PBXFileReference section */
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
+		1C1B16CAA671EB807E06BAC8 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		44A671D42BC7AFBA0042F967 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		5CBF7E750B7062BC2AFC3153 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		749F64408A7F8E08A88E3853 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
+		85543F65286BC8BE7DB29A94 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -47,9 +49,7 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9992F2D6BB74149FB3B41A7B /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
-		C8F5DE140C2253F564B73E36 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
-		F9D22F1CC661B212CA55E858 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
+		DE77AA296C4103AAC63F6404 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,17 +57,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				770A52AFC6C67591105D0369 /* Pods_Runner.framework in Frameworks */,
+				80F67F5DAB7AC9760CD894FC /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		7E5B2D8BDC984261BFA70DD3 /* Frameworks */ = {
+		3DDF26C91FC2C99784D41369 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				5CBF7E750B7062BC2AFC3153 /* Pods_Runner.framework */,
+				1C1B16CAA671EB807E06BAC8 /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -90,7 +90,7 @@
 				97C146F01CF9000F007C117D /* Runner */,
 				97C146EF1CF9000F007C117D /* Products */,
 				C9024935834C140534441E4B /* Pods */,
-				7E5B2D8BDC984261BFA70DD3 /* Frameworks */,
+				3DDF26C91FC2C99784D41369 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -122,9 +122,9 @@
 		C9024935834C140534441E4B /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				F9D22F1CC661B212CA55E858 /* Pods-Runner.debug.xcconfig */,
-				9992F2D6BB74149FB3B41A7B /* Pods-Runner.release.xcconfig */,
-				C8F5DE140C2253F564B73E36 /* Pods-Runner.profile.xcconfig */,
+				749F64408A7F8E08A88E3853 /* Pods-Runner.debug.xcconfig */,
+				85543F65286BC8BE7DB29A94 /* Pods-Runner.release.xcconfig */,
+				DE77AA296C4103AAC63F6404 /* Pods-Runner.profile.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -136,16 +136,17 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
 			buildPhases = (
-				0C666C88410290D203AF1C7B /* [CP] Check Pods Manifest.lock */,
+				FB890D08FA400171214B430F /* [CP] Check Pods Manifest.lock */,
 				9740EEB61CF901F6004384FC /* Run Script */,
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
-				58FC3000FD3CCDCDEC99F3AF /* [CP] Embed Pods Frameworks */,
-				DC48AA43A4871148A7813C2F /* Square SDK Setup */,
-				E011A0A5FB7EF905924ECA12 /* [CP] Copy Pods Resources */,
+				3B88FA4AAC49618447983A5C /* [CP] Embed Pods Frameworks */,
+				7D6A02D494C1C77388CBA34F /* Square SDK Setup */,
+				631AFCB3F3BE5B6B2C2A70FD /* [firebase_crashlytics] Crashlytics Upload Symbols */,
+				DE88D7CFD1B013BB4F6476FC /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -206,7 +207,148 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0C666C88410290D203AF1C7B /* [CP] Check Pods Manifest.lock */ = {
+		3B06AD1E1E4923F5004D2608 /* Thin Binary */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}",
+			);
+			name = "Thin Binary";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
+		};
+		3B88FA4AAC49618447983A5C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		631AFCB3F3BE5B6B2C2A70FD /* [firebase_crashlytics] Crashlytics Upload Symbols */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = "[firebase_crashlytics] Crashlytics Upload Symbols";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nset -e\n\n# Firebase Crashlytics automatic dSYM upload\necho \"🔥 Firebase Crashlytics: Uploading dSYM files...\"\n\n# Path to upload-symbols script from firebase_crashlytics pod\nUPLOAD_SYMBOLS_PATH=\"${PODS_ROOT}/FirebaseCrashlytics/upload-symbols\"\n\n# Alternative path if using newer pod structure\nif [ ! -f \"$UPLOAD_SYMBOLS_PATH\" ]; then\n  UPLOAD_SYMBOLS_PATH=\"${PODS_ROOT}/FirebaseCrashlytics/Crashlytics/upload-symbols\"\nfi\n\n# Check if upload-symbols exists\nif [ -f \"$UPLOAD_SYMBOLS_PATH\" ]; then\n  echo \"✅ Found upload-symbols at: $UPLOAD_SYMBOLS_PATH\"\n  \n  # Upload dSYM files (only for Archive/Release builds)\n  if [ \"${CONFIGURATION}\" = \"Release\" ] || [ \"${CONFIGURATION}\" = \"Profile\" ]; then\n    echo \"📤 Uploading dSYM files for ${CONFIGURATION} build...\"\n    \"$UPLOAD_SYMBOLS_PATH\" -gsp \"${PROJECT_DIR}/Runner/GoogleService-Info.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\n    echo \"✅ dSYM upload completed successfully\"\n  else\n    echo \"⏭️  Skipping dSYM upload for ${CONFIGURATION} build (only Release/Profile)\"\n  fi\nelse\n  echo \"⚠️  Warning: upload-symbols not found. Run 'pod install' to get FirebaseCrashlytics.\"\nfi\n\nexit 0\n";
+		};
+		7D6A02D494C1C77388CBA34F /* Square SDK Setup */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Square SDK Setup";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "FRAMEWORKS=\"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\n\n# Square In-App Payments SDK setup\nif [ -f \"${FRAMEWORKS}/SquareInAppPaymentsSDK.framework/setup\" ]; then\n  echo \"Running SquareInAppPaymentsSDK setup...\"\n  \"${FRAMEWORKS}/SquareInAppPaymentsSDK.framework/setup\" || echo \"Warning: SquareInAppPaymentsSDK setup failed\"\nelse\n  echo \"Warning: SquareInAppPaymentsSDK setup script not found\"\nfi\n\n# Square Buyer Verification (3DS) SDK setup\nif [ -f \"${FRAMEWORKS}/SquareBuyerVerificationSDK.framework/setup\" ]; then\n  echo \"Running SquareBuyerVerificationSDK setup...\"\n  \"${FRAMEWORKS}/SquareBuyerVerificationSDK.framework/setup\" || echo \"Warning: SquareBuyerVerificationSDK setup failed\"\nelse\n  echo \"Warning: SquareBuyerVerificationSDK setup script not found\"\nfi\n\nexit 0\n";
+		};
+		9740EEB61CF901F6004384FC /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+		};
+		DE88D7CFD1B013BB4F6476FC /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DF85322E87EF7643ED19D463 /* Square SDK Setup */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Square SDK Setup";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "FRAMEWORKS=\"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\n\n# Square In-App Payments SDK setup\nif [ -f \"${FRAMEWORKS}/SquareInAppPaymentsSDK.framework/setup\" ]; then\n  echo \"Running SquareInAppPaymentsSDK setup...\"\n  \"${FRAMEWORKS}/SquareInAppPaymentsSDK.framework/setup\" || echo \"Warning: SquareInAppPaymentsSDK setup failed\"\nelse\n  echo \"Warning: SquareInAppPaymentsSDK setup script not found\"\nfi\n\n# Square Buyer Verification (3DS) SDK setup\nif [ -f \"${FRAMEWORKS}/SquareBuyerVerificationSDK.framework/setup\" ]; then\n  echo \"Running SquareBuyerVerificationSDK setup...\"\n  \"${FRAMEWORKS}/SquareBuyerVerificationSDK.framework/setup\" || echo \"Warning: SquareBuyerVerificationSDK setup failed\"\nelse\n  echo \"Warning: SquareBuyerVerificationSDK setup script not found\"\nfi\n\nexit 0\n";
+		};
+		FAD547153E440AD35B8C98E1 /* [firebase_crashlytics] Crashlytics Upload Symbols */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = "[firebase_crashlytics] Crashlytics Upload Symbols";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nset -e\n\n# Firebase Crashlytics automatic dSYM upload\necho \"🔥 Firebase Crashlytics: Uploading dSYM files...\"\n\n# Path to upload-symbols script from firebase_crashlytics pod\nUPLOAD_SYMBOLS_PATH=\"${PODS_ROOT}/FirebaseCrashlytics/upload-symbols\"\n\n# Alternative path if using newer pod structure\nif [ ! -f \"$UPLOAD_SYMBOLS_PATH\" ]; then\n  UPLOAD_SYMBOLS_PATH=\"${PODS_ROOT}/FirebaseCrashlytics/Crashlytics/upload-symbols\"\nfi\n\n# Check if upload-symbols exists\nif [ -f \"$UPLOAD_SYMBOLS_PATH\" ]; then\n  echo \"✅ Found upload-symbols at: $UPLOAD_SYMBOLS_PATH\"\n  \n  # Upload dSYM files (only for Archive/Release builds)\n  if [ \"${CONFIGURATION}\" = \"Release\" ] || [ \"${CONFIGURATION}\" = \"Profile\" ]; then\n    echo \"📤 Uploading dSYM files for ${CONFIGURATION} build...\"\n    \"$UPLOAD_SYMBOLS_PATH\" -gsp \"${PROJECT_DIR}/Runner/GoogleService-Info.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\n    echo \"✅ dSYM upload completed successfully\"\n  else\n    echo \"⏭️  Skipping dSYM upload for ${CONFIGURATION} build (only Release/Profile)\"\n  fi\nelse\n  echo \"⚠️  Warning: upload-symbols not found. Run 'pod install' to get FirebaseCrashlytics.\"\nfi\n\nexit 0\n";
+		};
+		FB890D08FA400171214B430F /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -226,89 +368,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		3B06AD1E1E4923F5004D2608 /* Thin Binary */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}",
-			);
-			name = "Thin Binary";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
-		};
-		58FC3000FD3CCDCDEC99F3AF /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9740EEB61CF901F6004384FC /* Run Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Script";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
-		};
-		DC48AA43A4871148A7813C2F /* Square SDK Setup */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Square SDK Setup";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "FRAMEWORKS=\"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\n\n# Square In-App Payments SDK setup\nif [ -f \"${FRAMEWORKS}/SquareInAppPaymentsSDK.framework/setup\" ]; then\n  echo \"Running SquareInAppPaymentsSDK setup...\"\n  \"${FRAMEWORKS}/SquareInAppPaymentsSDK.framework/setup\" || echo \"Warning: SquareInAppPaymentsSDK setup failed\"\nelse\n  echo \"Warning: SquareInAppPaymentsSDK setup script not found\"\nfi\n\n# Square Buyer Verification (3DS) SDK setup\nif [ -f \"${FRAMEWORKS}/SquareBuyerVerificationSDK.framework/setup\" ]; then\n  echo \"Running SquareBuyerVerificationSDK setup...\"\n  \"${FRAMEWORKS}/SquareBuyerVerificationSDK.framework/setup\" || echo \"Warning: SquareBuyerVerificationSDK setup failed\"\nelse\n  echo \"Warning: SquareBuyerVerificationSDK setup script not found\"\nfi\n\nexit 0\n";
-		};
-		E011A0A5FB7EF905924ECA12 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -410,6 +469,7 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = KM577PM5X9;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -547,6 +607,7 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = KM577PM5X9;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -579,6 +640,7 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = KM577PM5X9;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

@@ -5,6 +5,7 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/app_network_image.dart';
 import 'dart:ui';
 import '/index.dart';
 import '/core/services/user_journey_tracker.dart';
@@ -616,86 +617,15 @@ class _CartPageWidgetState extends State<CartPageWidget> with RouteAware {
                                                 builder: (context) {
                                                   // CRITICAL FIX: Cache theme colors BEFORE the image builders
                                                   // to prevent "Looking up a deactivated widget's ancestor" crash
-                                                  final alternateColor = FlutterFlowTheme.of(context).alternate;
-                                                  final secondaryTextColor = FlutterFlowTheme.of(context).secondaryText;
-                                                  final primaryColor = FlutterFlowTheme.of(context).primary;
-
-                                                  return ClipRRect(
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        0.0),
-                                                    child: Image.network(
-                                                      imageUrl,
-                                                      key: ValueKey(imageUrl),
-                                                      width: 80.0,
-                                                      height: 80.0,
-                                                      fit: BoxFit.cover,
-                                                      errorBuilder: (context,
-                                                          error, stackTrace) {
-                                                        // SAFE: No context lookups here - uses cached colors
-                                                        return Container(
-                                                          width: 80.0,
-                                                          height: 80.0,
-                                                          decoration:
-                                                          BoxDecoration(
-                                                            color: alternateColor,
-                                                            borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                0.0),
-                                                          ),
-                                                          child: Image.asset(
-                                                            'assets/images/placeholder.jpg',
-                                                            width: 80.0,
-                                                            height: 80.0,
-                                                            fit: BoxFit.cover,
-                                                            errorBuilder: (context, error, stackTrace) {
-                                                              // SAFE: Uses cached color
-                                                              return Icon(
-                                                                Icons
-                                                                    .image_not_supported,
-                                                                color: secondaryTextColor,
-                                                                size: 40.0,
-                                                              );
-                                                            },
-                                                          ),
-                                                        );
-                                                      },
-                                                      loadingBuilder: (context,
-                                                          child,
-                                                          loadingProgress) {
-                                                        if (loadingProgress ==
-                                                            null) {
-                                                          return child;
-                                                        }
-                                                        // SAFE: No context lookups here - uses cached colors
-                                                        return Container(
-                                                          width: 80.0,
-                                                          height: 80.0,
-                                                          decoration:
-                                                          BoxDecoration(
-                                                            color: alternateColor,
-                                                          ),
-                                                          child: Center(
-                                                            child:
-                                                            CircularProgressIndicator(
-                                                              value: loadingProgress
-                                                                  .expectedTotalBytes !=
-                                                                  null
-                                                                  ? loadingProgress
-                                                                  .cumulativeBytesLoaded /
-                                                                  loadingProgress
-                                                                      .expectedTotalBytes!
-                                                                  : null,
-                                                              color: primaryColor,
-                                                              strokeWidth: 2.0,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                      cacheWidth: 80,
-                                                      cacheHeight: 80,
-                                                    ),
+                                                  return AppNetworkImage(
+                                                    imageUrl: imageUrl,
+                                                    width: 80.0,
+                                                    height: 80.0,
+                                                    fit: BoxFit.cover,
+                                                    borderRadius: BorderRadius.circular(0.0),
+                                                    placeholderColor: FlutterFlowTheme.of(context).alternate,
+                                                    errorIconColor: FlutterFlowTheme.of(context).secondaryText,
+                                                    errorIconSize: 40.0,
                                                   );
                                                 },
                                               ),

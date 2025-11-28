@@ -20,6 +20,7 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:url_launcher_ios/url_launcher_ios.dart' as url_launcher_ios;
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart' as webview_flutter_wkwebview;
 import 'package:file_picker/file_picker.dart' as file_picker;
+import 'package:package_info_plus/package_info_plus.dart' as package_info_plus;
 import 'package:path_provider_linux/path_provider_linux.dart' as path_provider_linux;
 import 'package:shared_preferences_linux/shared_preferences_linux.dart' as shared_preferences_linux;
 import 'package:url_launcher_linux/url_launcher_linux.dart' as url_launcher_linux;
@@ -31,6 +32,7 @@ import 'package:url_launcher_macos/url_launcher_macos.dart' as url_launcher_maco
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart' as webview_flutter_wkwebview;
 import 'package:file_picker/file_picker.dart' as file_picker;
 import 'package:flutter_secure_storage_windows/flutter_secure_storage_windows.dart' as flutter_secure_storage_windows;
+import 'package:package_info_plus/package_info_plus.dart' as package_info_plus;
 import 'package:path_provider_windows/path_provider_windows.dart' as path_provider_windows;
 import 'package:shared_preferences_windows/shared_preferences_windows.dart' as shared_preferences_windows;
 import 'package:url_launcher_windows/url_launcher_windows.dart' as url_launcher_windows;
@@ -170,6 +172,15 @@ class _PluginRegistrant {
       }
 
       try {
+        package_info_plus.PackageInfoPlusLinuxPlugin.registerWith();
+      } catch (err) {
+        print(
+          '`package_info_plus` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
         path_provider_linux.PathProviderLinux.registerWith();
       } catch (err) {
         print(
@@ -266,6 +277,15 @@ class _PluginRegistrant {
       } catch (err) {
         print(
           '`flutter_secure_storage_windows` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
+        package_info_plus.PackageInfoPlusWindowsPlugin.registerWith();
+      } catch (err) {
+        print(
+          '`package_info_plus` threw an error: $err. '
           'The app may not function as expected until you remove this plugin from pubspec.yaml'
         );
       }

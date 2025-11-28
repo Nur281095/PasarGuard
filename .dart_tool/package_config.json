@@ -1047,8 +1047,8 @@
     }
   ],
   "generator": "pub",
-  "generatorVersion": "3.10.0-75.1.beta",
+  "generatorVersion": "3.10.1",
   "flutterRoot": "file:///Users/Apple/Desktop/Android/Flutter/sdk",
-  "flutterVersion": "3.36.0-0.5.pre",
+  "flutterVersion": "3.38.3",
   "pubCache": "file:///Users/Apple/.pub-cache"
 }

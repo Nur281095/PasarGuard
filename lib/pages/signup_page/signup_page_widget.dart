@@ -209,7 +209,7 @@ class _SignupPageWidgetState extends State<SignupPageWidget> with RouteAware {
                             child: TextFormField(
                               controller: _model.fNameFTextController,
                               focusNode: _model.fNameFFocusNode,
-                              autofocus: true,
+                              autofocus: false,
                               textInputAction: TextInputAction.next,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -333,7 +333,7 @@ class _SignupPageWidgetState extends State<SignupPageWidget> with RouteAware {
                             child: TextFormField(
                               controller: _model.lastNameFTextController,
                               focusNode: _model.lastNameFFocusNode,
-                              autofocus: true,
+                              autofocus: false,
                               textInputAction: TextInputAction.next,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -457,7 +457,7 @@ class _SignupPageWidgetState extends State<SignupPageWidget> with RouteAware {
                             child: TextFormField(
                               controller: _model.emailFTextController,
                               focusNode: _model.emailFFocusNode,
-                              autofocus: true,
+                              autofocus: false,
                               textInputAction: TextInputAction.next,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -582,7 +582,7 @@ class _SignupPageWidgetState extends State<SignupPageWidget> with RouteAware {
                             child: TextFormField(
                               controller: _model.passFTextController,
                               focusNode: _model.passFFocusNode,
-                              autofocus: true,
+                              autofocus: false,
                               textInputAction: TextInputAction.next,
                               obscureText: !_model.passFVisibility,
                               decoration: InputDecoration(
@@ -721,7 +721,7 @@ class _SignupPageWidgetState extends State<SignupPageWidget> with RouteAware {
                             child: TextFormField(
                               controller: _model.conPassFTextController,
                               focusNode: _model.conPassFFocusNode,
-                              autofocus: true,
+                              autofocus: false,
                               textInputAction: TextInputAction.next,
                               obscureText: !_model.conPassFVisibility,
                               decoration: InputDecoration(

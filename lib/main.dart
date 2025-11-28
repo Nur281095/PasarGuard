@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'core/services/app_analytics.dart';
 
 import 'auth/custom_auth/auth_util.dart';
@@ -14,6 +15,7 @@ import 'auth/custom_auth/custom_auth_user_provider.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'flutter_flow/safe_google_fonts.dart';
 import 'flutter_flow/nav/nav.dart';
 import 'index.dart';
 
@@ -22,12 +24,15 @@ import 'package:easy_debounce/easy_debounce.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  installGoogleFontsSafeguard();
   GoRouter.optionURLReflectsImperativeAPIs = true;
   usePathUrlStrategy();
   debugLogAppConstant();
 
-  // Initialize Firebase
-  await Firebase.initializeApp();
+  // Initialize Firebase with platform-specific options
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   
   // Initialize Analytics
   await AppAnalytics().init();

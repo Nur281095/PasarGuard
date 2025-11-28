@@ -4,7 +4,11 @@ plugins {
    id "dev.flutter.flutter-gradle-plugin"
 }
 
+// Apply Google Services plugin for Firebase
 apply plugin: 'com.google.gms.google-services'
+
+// 🔥 Apply Firebase Crashlytics plugin for automatic mapping file upload
+apply plugin: 'com.google.firebase.crashlytics'
 
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
@@ -77,7 +81,37 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            
+            // 🔥 Enable code shrinking and obfuscation for release builds
+            minifyEnabled true
+            shrinkResources true
+            
+            // ProGuard rules for optimized release build
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            
+            // 🔥 Firebase Crashlytics: Automatically upload ProGuard mapping files
+            // This ensures crash reports are deobfuscated and readable
+            firebaseCrashlytics {
+                // Enable mapping file upload (default: true)
+                mappingFileUploadEnabled true
+                
+                // Disable native symbol upload if not using NDK (saves time)
+                nativeSymbolUploadEnabled false
+                
+                // Unstripped native library directory (only if using NDK)
+                // unstrippedNativeLibsDir 'build/intermediates/merged_native_libs/release/out/lib'
+            }
+        }
+        
+        // Profile build configuration (similar to release but with debugging enabled)
+        profile {
+            initWith release
+            
+            // Profile builds should also upload mapping files
+            firebaseCrashlytics {
+                mappingFileUploadEnabled true
+                nativeSymbolUploadEnabled false
+            }
         }
     }
 }

@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/Apple/Desktop/Personal/PasargadrugsIOS/build/ios/Debug-iphoneos/Runner.app/Runner'
+relocations:     []
+...

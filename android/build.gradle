@@ -5,6 +5,9 @@ buildscript {
     }
     dependencies {
         classpath 'com.google.gms:google-services:4.4.2'
+        
+        // 🔥 Firebase Crashlytics Gradle plugin for automatic mapping file upload
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.2'
     }
 }
 

@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 
 /// Helper class for price calculations and display
 class PriceHelpers {
-  /// Calculates the original price from current price and sale percentage
-  /// 
-  /// Formula: originalPrice = currentPrice + (currentPrice * salePercentage / 100)
-  /// Example: If current price is $225 and sale is 25%
-  ///          Original = 225 + (225 * 0.25) = 225 + 56.25 = 281.25
+  /// Calculates the discounted price from current price and sale percentage
+  ///
+  /// Formula: discountedPrice = currentPrice - (currentPrice * salePercentage / 100)
+  /// Example: If current price is $400 and sale is 30%
+  ///          Discounted = 400 - (400 * 0.30) = 400 - 120 = $280
   static double calculateOriginalPrice(double currentPrice, double salePercentage) {
     if (salePercentage <= 0) return currentPrice;
     final discountAmount = currentPrice * (salePercentage / 100);
-    return currentPrice + discountAmount;
+    return currentPrice - discountAmount;
   }
 
   /// Formats price to 2 decimal places
@@ -74,35 +74,45 @@ class PriceDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentPriceText = showDollarSign
-        ? '\$${PriceHelpers.formatPrice(currentPrice)}'
-        : PriceHelpers.formatPrice(currentPrice);
+    // If no original price, show only current price
+    if (originalPrice == null) {
+      final currentPriceText = showDollarSign
+          ? '\$${PriceHelpers.formatPrice(currentPrice)}'
+          : PriceHelpers.formatPrice(currentPrice);
 
-    // If no original price or same as current, show only current price
-    if (originalPrice == null || originalPrice! <= currentPrice) {
       return Text(
         currentPriceText,
         style: currentPriceStyle,
       );
     }
 
-    final originalPriceText = showDollarSign
+    // originalPrice is the discounted price ($280)
+    // currentPrice is the original price ($400)
+
+    final discountedPriceText = showDollarSign
         ? '\$${PriceHelpers.formatPrice(originalPrice!)}'
         : PriceHelpers.formatPrice(originalPrice!);
 
+    final originalPriceText = showDollarSign
+        ? '\$${PriceHelpers.formatPrice(currentPrice)}'
+        : PriceHelpers.formatPrice(currentPrice);
+
     final widgets = <Widget>[
-      // Current/Sale Price
+      // Discounted Price (shown first) - Bold Black
       Text(
-        currentPriceText,
-        style: currentPriceStyle,
+        discountedPriceText,
+        style: currentPriceStyle ?? TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
       ),
-      
+
       SizedBox(
         width: axis == Axis.horizontal ? spacing : 0,
         height: axis == Axis.vertical ? spacing : 0,
       ),
-      
-      // Original Price with strikethrough
+
+      // Original Price with strikethrough (shown second) - Regular Gray
       Text(
         originalPriceText,
         style: originalPriceStyle?.copyWith(
@@ -111,6 +121,9 @@ class PriceDisplay extends StatelessWidget {
         ) ?? TextStyle(
           decoration: TextDecoration.lineThrough,
           decorationThickness: 2.0,
+          color: Colors.grey,
+          fontWeight: FontWeight.normal,
+          fontSize: (currentPriceStyle?.fontSize ?? 14) * 0.85, // Smaller font
         ),
       ),
     ];
@@ -130,4 +143,3 @@ class PriceDisplay extends StatelessWidget {
     }
   }
 }
-

@@ -40,6 +40,10 @@ post_install do |installer|
     target.build_configurations.each do |config|
       config.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
       
+      # Enable dSYM generation for Release builds (required for Crashlytics)
+      if config.name == 'Release' || config.name == 'Profile'
+        config.build_settings['DEBUG_INFORMATION_FORMAT'] = 'dwarf-with-dsym'
+      end
     end
   end
   
@@ -56,6 +60,60 @@ post_install do |installer|
         phase.name == 'Square SDK Setup'
       end
       
+      # ========================================
+      # 🔥 Firebase Crashlytics dSYM Upload Script
+      # ========================================
+      # Remove existing Crashlytics script if present
+      target.build_phases.delete_if do |phase|
+        phase.is_a?(Xcodeproj::Project::Object::PBXShellScriptBuildPhase) && 
+        (phase.name == 'Firebase Crashlytics' || phase.name == '[firebase_crashlytics] Crashlytics Upload Symbols')
+      end
+      
+      # Add Firebase Crashlytics dSYM upload script
+      crashlytics_script_phase = target.new_shell_script_build_phase('[firebase_crashlytics] Crashlytics Upload Symbols')
+      crashlytics_script_phase.shell_script = <<-CRASHLYTICS_SCRIPT
+#!/bin/sh
+set -e
+
+# Firebase Crashlytics automatic dSYM upload
+echo "🔥 Firebase Crashlytics: Uploading dSYM files..."
+
+# Path to upload-symbols script from firebase_crashlytics pod
+UPLOAD_SYMBOLS_PATH="${PODS_ROOT}/FirebaseCrashlytics/upload-symbols"
+
+# Alternative path if using newer pod structure
+if [ ! -f "$UPLOAD_SYMBOLS_PATH" ]; then
+  UPLOAD_SYMBOLS_PATH="${PODS_ROOT}/FirebaseCrashlytics/Crashlytics/upload-symbols"
+fi
+
+# Check if upload-symbols exists
+if [ -f "$UPLOAD_SYMBOLS_PATH" ]; then
+  echo "✅ Found upload-symbols at: $UPLOAD_SYMBOLS_PATH"
+  
+  # Upload dSYM files (only for Archive/Release builds)
+  if [ "${CONFIGURATION}" = "Release" ] || [ "${CONFIGURATION}" = "Profile" ]; then
+    echo "📤 Uploading dSYM files for ${CONFIGURATION} build..."
+    "$UPLOAD_SYMBOLS_PATH" -gsp "${PROJECT_DIR}/Runner/GoogleService-Info.plist" -p ios "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}"
+    echo "✅ dSYM upload completed successfully"
+  else
+    echo "⏭️  Skipping dSYM upload for ${CONFIGURATION} build (only Release/Profile)"
+  fi
+else
+  echo "⚠️  Warning: upload-symbols not found. Run 'pod install' to get FirebaseCrashlytics."
+fi
+
+exit 0
+      CRASHLYTICS_SCRIPT
+      
+      # Input files (tells Xcode when to run this script)
+      crashlytics_script_phase.input_paths = [
+        '${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}',
+        '$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)'
+      ]
+      
+      # ========================================
+      # 🟦 Square SDK Setup Script
+      # ========================================
       # Add the Square SDK setup script
       square_script_phase = target.new_shell_script_build_phase('Square SDK Setup')
       square_script_phase.shell_script = <<-SCRIPT
@@ -80,7 +138,7 @@ fi
 exit 0
       SCRIPT
       
-      # Move script to run AFTER the Embed Pods Frameworks phase
+      # Move Square script to run AFTER the Embed Pods Frameworks phase
       embed_phase_index = target.build_phases.index do |phase|
         phase.is_a?(Xcodeproj::Project::Object::PBXShellScriptBuildPhase) && 
         (phase.name.include?('Embed Pods Frameworks') || phase.name.include?('[CP] Embed Pods Frameworks'))
@@ -90,6 +148,10 @@ exit 0
         # Remove from current position and insert after embed phase
         target.build_phases.delete(square_script_phase)
         target.build_phases.insert(embed_phase_index + 1, square_script_phase)
+        
+        # Move Crashlytics script to run AFTER Square setup (at the end)
+        target.build_phases.delete(crashlytics_script_phase)
+        target.build_phases.insert(embed_phase_index + 2, crashlytics_script_phase)
       end
     end
   end

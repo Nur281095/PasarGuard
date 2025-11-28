@@ -187,10 +187,10 @@ class _SignInPageWidgetState extends State<SignInPageWidget> with RouteAware {
                                 color: FlutterFlowTheme.of(context)
                                     .secondaryBackground,
                               ),
-                              child: TextFormField(
+                              child:                               TextFormField(
                                 controller: _model.emailFTextController,
                                 focusNode: _model.emailFFocusNode,
-                                autofocus: true,
+                                autofocus: false,
                                 textInputAction: TextInputAction.next,
                                 obscureText: false,
                                 decoration: InputDecoration(
@@ -319,10 +319,10 @@ class _SignInPageWidgetState extends State<SignInPageWidget> with RouteAware {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                             ),
-                            child: TextFormField(
+                            child:                             TextFormField(
                               controller: _model.passwordFTextController,
                               focusNode: _model.passwordFFocusNode,
-                              autofocus: true,
+                              autofocus: false,
                               textInputAction: TextInputAction.done,
                               obscureText: !_model.passwordFVisibility,
                               decoration: InputDecoration(

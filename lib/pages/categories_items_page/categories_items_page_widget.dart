@@ -4,6 +4,7 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/app_network_image.dart';
 import 'dart:ui';
 import '/custom_code/widgets/index.dart' as custom_widgets;
 import '/index.dart';
@@ -513,6 +514,7 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                         child: TextFormField(
                           controller: _model.searchFTextController,
                           focusNode: _model.searchFFocusNode,
+                          autofocus: false,
                           onChanged: (_) => EasyDebounce.debounce(
                             '_model.searchFTextController',
                             Duration(milliseconds: 2000),
@@ -585,7 +587,6 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
 
                             if (_shouldSetState) safeSetState(() {});
                           },
-                          autofocus: true,
                           textInputAction: TextInputAction.next,
                           obscureText: false,
                           decoration: InputDecoration(
@@ -816,64 +817,18 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                                                               ),
                                                               child: Stack(
                                                                 children: [
-                                                                  Builder(
-                                                                    builder: (context) {
-                                                                      // Cache theme colors
-                                                                      final alternateColor = FlutterFlowTheme.of(context).alternate;
-                                                                      final secondaryTextColor = FlutterFlowTheme.of(context).secondaryText;
-                                                                      final primaryColor = FlutterFlowTheme.of(context).primary;
-
-                                                                      return ClipRRect(
-                                                                        borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(
-                                                                            8.0),
-                                                                        child: Image
-                                                                            .network(
-                                                                          getJsonField(
-                                                                            productItem,
-                                                                            r'''$.images[0]''',
-                                                                          ).toString(),
-                                                                          width: 100.0,
-                                                                          height: 100.0,
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                          alignment:
-                                                                              Alignment
-                                                                                  .center,
-                                                                          errorBuilder: (context, error, stackTrace) {
-                                                                            return Container(
-                                                                              width: 100.0,
-                                                                              height: 100.0,
-                                                                              color: alternateColor,
-                                                                              child: Icon(
-                                                                                Icons.image_not_supported,
-                                                                                color: secondaryTextColor,
-                                                                                size: 32.0,
-                                                                              ),
-                                                                            );
-                                                                          },
-                                                                          loadingBuilder: (context, child, loadingProgress) {
-                                                                            if (loadingProgress == null) return child;
-                                                                            return Container(
-                                                                              width: 100.0,
-                                                                              height: 100.0,
-                                                                              color: alternateColor,
-                                                                              child: Center(
-                                                                                child: CircularProgressIndicator(
-                                                                                  value: loadingProgress.expectedTotalBytes != null
-                                                                                      ? loadingProgress.cumulativeBytesLoaded /
-                                                                                          loadingProgress.expectedTotalBytes!
-                                                                                      : null,
-                                                                                  color: primaryColor,
-                                                                                  strokeWidth: 2.0,
-                                                                                ),
-                                                                              ),
-                                                                            );
-                                                                          },
-                                                                        ),
-                                                                      );
-                                                                    },
+                                                                  AppNetworkImage(
+                                                                    imageUrl: getJsonField(
+                                                                      productItem,
+                                                                      r'''$.images[0]''',
+                                                                    )?.toString(),
+                                                                    width: 100.0,
+                                                                    height: 100.0,
+                                                                    fit: BoxFit.cover,
+                                                                    borderRadius: BorderRadius.circular(8.0),
+                                                                    placeholderColor: FlutterFlowTheme.of(context).alternate,
+                                                                    errorIconColor: FlutterFlowTheme.of(context).secondaryText,
+                                                                    errorIconSize: 32.0,
                                                                   ),
                                                                   if (getJsonField(
                                                                     productItem,
@@ -1019,62 +974,15 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                                                                                     color:
                                                                                     FlutterFlowTheme.of(context).secondaryBackground,
                                                                                   ),
-                                                                            child: Builder(
-                                                                              builder: (context) {
-                                                                                // Cache theme colors
-                                                                                final alternateColor = FlutterFlowTheme.of(context).alternate;
-                                                                                final secondaryTextColor = FlutterFlowTheme.of(context).secondaryText;
-                                                                                final primaryColor = FlutterFlowTheme.of(context).primary;
-
-                                                                                return ClipRRect(
-                                                                                  borderRadius:
-                                                                                  BorderRadius.circular(8.0),
-                                                                                  child:
-                                                                                  Image.network(
-                                                                                    imageItem.toString(),
-                                                                                    width: 30.0,
-                                                                                    height: 30.0,
-                                                                                    fit: BoxFit.cover,
-                                                                                    alignment:
-                                                                                        Alignment
-                                                                                            .center,
-                                                                                    errorBuilder: (context, error, stackTrace) {
-                                                                                      return Container(
-                                                                                        width: 30.0,
-                                                                                        height: 30.0,
-                                                                                        color: alternateColor,
-                                                                                        child: Icon(
-                                                                                          Icons.image_not_supported,
-                                                                                          color: secondaryTextColor,
-                                                                                          size: 16.0,
-                                                                                        ),
-                                                                                      );
-                                                                                    },
-                                                                                    loadingBuilder: (context, child, loadingProgress) {
-                                                                                      if (loadingProgress == null) return child;
-                                                                                      return Container(
-                                                                                        width: 30.0,
-                                                                                        height: 30.0,
-                                                                                        color: alternateColor,
-                                                                                        child: Center(
-                                                                                          child: SizedBox(
-                                                                                            width: 16.0,
-                                                                                            height: 16.0,
-                                                                                            child: CircularProgressIndicator(
-                                                                                              value: loadingProgress.expectedTotalBytes != null
-                                                                                                  ? loadingProgress.cumulativeBytesLoaded /
-                                                                                                      loadingProgress.expectedTotalBytes!
-                                                                                                  : null,
-                                                                                              color: primaryColor,
-                                                                                              strokeWidth: 2.0,
-                                                                                            ),
-                                                                                          ),
-                                                                                        ),
-                                                                                      );
-                                                                                    },
-                                                                                  ),
-                                                                                );
-                                                                              },
+                                                                            child: AppNetworkImage(
+                                                                              imageUrl: imageItem.toString(),
+                                                                              width: 30.0,
+                                                                              height: 30.0,
+                                                                              fit: BoxFit.cover,
+                                                                              borderRadius: BorderRadius.circular(8.0),
+                                                                              placeholderColor: FlutterFlowTheme.of(context).alternate,
+                                                                              errorIconColor: FlutterFlowTheme.of(context).secondaryText,
+                                                                              errorIconSize: 16.0,
                                                                             ),
                                                                                 ),
                                                                               );
