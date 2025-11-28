@@ -73,7 +73,9 @@ class AppNetworkImage extends StatelessWidget {
   /// Firebase recommends: memCacheWidth/Height should be ~2x display size
   /// for high-DPI screens, but we cap at reasonable limits to prevent OOM
   int? _getCacheDimension(double? displaySize) {
-    if (displaySize == null) return null;
+    if (displaySize == null || displaySize.isNaN || displaySize.isInfinite) {
+      return null;
+    }
     
     // Convert logical pixels to physical pixels (assume 3x for safety)
     // But cap at 1024 to prevent excessive memory usage
@@ -169,4 +171,3 @@ class AppNetworkImage extends StatelessWidget {
     );
   }
 }
-
