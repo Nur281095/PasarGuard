@@ -46,6 +46,7 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoadingCart = false;
+  bool get _isSalePage => (widget.navTitle?.toLowerCase() == 'sale');
 
   @override
   void initState() {
@@ -135,7 +136,7 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
       debugPrint('  collection: ${collectionFilter != null ? collectionFilter.toString() : 'null'}');
       debugPrint('  search: $searchFilter');
       // Call API
-      _model.productApiResult = await PasargadrugsGroup.productsCall.call(
+      _model.productApiResult = await _makeProductsCall(
         categories: catId,
         shape: shapeFilter ?? '',
         size: sizeFilter ?? '',
@@ -151,12 +152,7 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
       }
 
       if ((_model.productApiResult?.succeeded ?? true)) {
-        _model.products = PasargadrugsGroup.productsCall
-            .products(
-          (_model.productApiResult?.jsonBody ?? ''),
-        )!
-            .toList()
-            .cast<dynamic>();
+        _model.products = _extractProducts(_model.productApiResult);
 
         _model.isLoading = false;
         safeSetState(() {});
@@ -175,6 +171,54 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
     });
 
     return completer.future;
+  }
+
+  Future<ApiCallResponse> _makeProductsCall({
+    int? categories,
+    int? style,
+    String? shape,
+    int? collection,
+    int? material,
+    int? color,
+    String? type,
+    String? search,
+    String? size,
+  }) {
+    if (_isSalePage) {
+      return PasargadrugsGroup.saleProductsCall.call(
+        categories: categories,
+        style: style,
+        shape: shape ?? '',
+        collection: collection,
+        material: material,
+        color: color,
+        type: type ?? '',
+        search: search ?? '',
+        size: size ?? '',
+      );
+    }
+
+    return PasargadrugsGroup.productsCall.call(
+      categories: categories,
+      style: style,
+      shape: shape ?? '',
+      collection: collection,
+      material: material,
+      color: color,
+      type: type ?? '',
+      search: search ?? '',
+      size: size ?? '',
+    );
+  }
+
+  List<dynamic> _extractProducts(ApiCallResponse? response) {
+    if (response == null) return [];
+
+    final products = _isSalePage
+        ? PasargadrugsGroup.saleProductsCall.products(response.jsonBody)
+        : PasargadrugsGroup.productsCall.products(response.jsonBody);
+
+    return (products ?? <dynamic>[]).toList().cast<dynamic>();
   }
 
 
@@ -429,7 +473,7 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                   );
 
                   _model.filteredApiResult =
-                  await PasargadrugsGroup.productsCall.call(
+                  await _makeProductsCall(
                     categories: getJsonField(
                       _model.filters,
                       r'''$.catID''',
@@ -467,13 +511,8 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                   );
 
                   _shouldSetState = true;
-                  if ((_model.productApiResult?.succeeded ?? true)) {
-                    _model.products = PasargadrugsGroup.productsCall
-                        .products(
-                      (_model.filteredApiResult?.jsonBody ?? ''),
-                    )!
-                        .toList()
-                        .cast<dynamic>();
+                  if ((_model.filteredApiResult?.succeeded ?? true)) {
+                    _model.products = _extractProducts(_model.filteredApiResult);
                     _model.isLoading = false;
                     safeSetState(() {});
                     if (_shouldSetState) safeSetState(() {});
@@ -525,18 +564,12 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                                 _model.isLoading = true;
                                 safeSetState(() {});
                                 _model.productResults =
-                                await PasargadrugsGroup.productsCall.call();
+                                await _makeProductsCall();
 
                                 _shouldSetState = true;
                                 if ((_model.productResults?.succeeded ??
                                     true)) {
-                                  _model.products = PasargadrugsGroup
-                                      .productsCall
-                                      .products(
-                                    (_model.productResults?.jsonBody ?? ''),
-                                  )!
-                                      .toList()
-                                      .cast<dynamic>();
+                                  _model.products = _extractProducts(_model.productResults);
                                   _model.isLoading = false;
                                   safeSetState(() {});
                                   if (_shouldSetState) safeSetState(() {});
@@ -560,20 +593,14 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                             _model.isLoading = true;
                             safeSetState(() {});
                             _model.productSearchResult =
-                            await PasargadrugsGroup.productsCall.call(
+                            await _makeProductsCall(
                               search: _model.searchFTextController.text,
                             );
 
                             _shouldSetState = true;
                             if ((_model.productSearchResult?.succeeded ??
                                 true)) {
-                              _model.products = PasargadrugsGroup.productsCall
-                                  .products(
-                                (_model.productSearchResult?.jsonBody ??
-                                    ''),
-                              )!
-                                  .toList()
-                                  .cast<dynamic>();
+                              _model.products = _extractProducts(_model.productSearchResult);
                               _model.isLoading = false;
                               safeSetState(() {});
                               if (_shouldSetState) safeSetState(() {});
@@ -1083,6 +1110,46 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                                                                                   1.0),
                                                                               child: Builder(
                                                                                 builder: (context) {
+                                                                                  if (_isSalePage) {
+                                                                                    final salePrice = PriceHelpers.parsePrice(
+                                                                                      getJsonField(productItem, r'''$.sale_price'''),
+                                                                                    );
+                                                                                    final originalPriceValue = PriceHelpers.parsePrice(
+                                                                                      getJsonField(productItem, r'''$.original_price'''),
+                                                                                    );
+                                                                                    final comparePrice = originalPriceValue > 0 ? originalPriceValue : null;
+                                                                                    final displayPrice = salePrice > 0 ? salePrice : originalPriceValue;
+
+                                                                                    return PriceDisplay(
+                                                                                      currentPrice: comparePrice ?? displayPrice,
+                                                                                      originalPrice: comparePrice != null ? displayPrice : null,
+                                                                                      currentPriceStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                        font: GoogleFonts.inter(
+                                                                                          fontWeight: FontWeight.w600,
+                                                                                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                                                        ),
+                                                                                        color: FlutterFlowTheme.of(context).primaryText,
+                                                                                        fontSize: 16.0,
+                                                                                        letterSpacing: 0.0,
+                                                                                        fontWeight: FontWeight.w600,
+                                                                                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                                                      ),
+                                                                                      originalPriceStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                        font: GoogleFonts.inter(
+                                                                                          fontWeight: FontWeight.w400,
+                                                                                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                                                        ),
+                                                                                        color: FlutterFlowTheme.of(context).secondaryText,
+                                                                                        fontSize: 13.0,
+                                                                                        letterSpacing: 0.0,
+                                                                                        fontWeight: FontWeight.w400,
+                                                                                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                                                      ),
+                                                                                      spacing: 6.0,
+                                                                                      axis: Axis.vertical,
+                                                                                    );
+                                                                                  }
+
                                                                                   final currentPrice = PriceHelpers.parsePrice(
                                                                                     getJsonField(productItem, r'''$.price'''),
                                                                                   );

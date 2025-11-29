@@ -23,6 +23,7 @@ class PasargadrugsGroup {
   static ProductsCall productsCall = ProductsCall();
   static ClearanceProductsCall clearanceProductsCall =
       ClearanceProductsCall();
+  static SaleProductsCall saleProductsCall = SaleProductsCall();
   static ProductsCopyCall productsCopyCall = ProductsCopyCall();
   static ProductDetailCall productDetailCall = ProductDetailCall();
   static GetFavouritesCall getFavouritesCall = GetFavouritesCall();
@@ -446,7 +447,7 @@ class ClearanceProductsCall {
 
     return ApiManager.instance.makeApiCall(
       callName: 'clearanceProducts',
-      apiUrl: '${baseUrl}/products/clearance',
+      apiUrl: '${baseUrl}/clearance-product',
       callType: ApiCallType.GET,
       headers: {
         'Authorization': '${token}',
@@ -462,15 +463,69 @@ class ClearanceProductsCall {
   }
 
   List? products(dynamic response) => getJsonField(
-        response,
-        r'''$.data.products''',
-        true,
-      )
-          as List?;
+    response,
+    r'''$.data''',
+    true,
+  ) as List?;
   String? message(dynamic response) => castToType<String>(getJsonField(
         response,
         r'''$.message''',
       ));
+}
+
+class SaleProductsCall {
+  Future<ApiCallResponse> call({
+    String? token = 'C3VWCG9YDCS0QG5VYMXLBWV0CMLJLMNVBQ==-67EF326E89F57',
+    int? categories,
+    int? style,
+    String? shape = '',
+    int? collection,
+    int? material,
+    int? color,
+    String? type = '',
+    String? search = '',
+    String? size = '',
+  }) async {
+    final baseUrl = PasargadrugsGroup.getBaseUrl();
+
+    final params = <String, dynamic>{};
+
+    if (categories != null) params['categories'] = categories;
+    if (style != null) params['style'] = style;
+    if (shape != null && shape.isNotEmpty) params['shape'] = shape;
+    if (collection != null) params['collection'] = collection;
+    if (material != null) params['material'] = material;
+    if (color != null) params['color'] = color;
+    if (type != null && type.isNotEmpty) params['type'] = type;
+    if (search != null && search.isNotEmpty) params['search'] = search;
+    if (size != null && size.isNotEmpty) params['size'] = size;
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'saleProducts',
+      apiUrl: '${baseUrl}/sale-product',
+      callType: ApiCallType.GET,
+      headers: {
+        'Authorization': '${token}',
+      },
+      params: params,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  List? products(dynamic response) => getJsonField(
+    response,
+    r'''$.data''',
+    true,
+  ) as List?;
+  String? message(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.message''',
+  ));
 }
 
 class ProductsCopyCall {
