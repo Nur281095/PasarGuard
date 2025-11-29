@@ -46,6 +46,14 @@ class ProductDetailPageModel extends FlutterFlowModel<ProductDetailPageWidget> {
                 'reference=ShgKEAoGcHJvZElEEgY3M2M2MjZyBAgBIAFQAVoGcHJvZElE',
             name: 'int',
             nullable: true,
+          ),
+          'showSaleTimer': debugSerializeParam(
+            widget?.showSaleTimer,
+            ParamType.bool,
+            link:
+                'https://app.flutterflow.io/project/pasargad-82dm1q?tab=uiBuilder&page=ProductDetailPage',
+            name: 'bool',
+            nullable: false,
           )
         }.withoutNulls,
         actionOutputs: {

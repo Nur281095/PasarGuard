@@ -45,6 +45,27 @@ class CategoriesItemsPageModel
   }
 
   bool get isLoading => _isLoading;
+  int _currentPage = 1;
+  set currentPage(int value) {
+    _currentPage = value;
+    debugLogWidgetClass(this);
+  }
+
+  int get currentPage => _currentPage;
+  int _lastPage = 1;
+  set lastPage(int value) {
+    _lastPage = value;
+    debugLogWidgetClass(this);
+  }
+
+  int get lastPage => _lastPage;
+  bool _isLoadingMore = false;
+  set isLoadingMore(bool value) {
+    _isLoadingMore = value;
+    debugLogWidgetClass(this);
+  }
+
+  bool get isLoadingMore => _isLoadingMore;
 
   ///  State fields for stateful widgets in this page.
 

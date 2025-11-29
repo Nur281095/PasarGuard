@@ -319,6 +319,8 @@ class ProductsCall {
     String? type = '',
     String? search = '',
     String? size = '',
+    int? page,
+    int? perPage,
   }) async {
     final baseUrl = PasargadrugsGroup.getBaseUrl();
 
@@ -334,6 +336,8 @@ class ProductsCall {
     if (type != null && type.isNotEmpty) params['type'] = type;
     if (search != null && search.isNotEmpty) params['search'] = search;
     if (size != null && size.isNotEmpty) params['size'] = size;
+    if (page != null) params['page'] = page;
+    if (perPage != null) params['per_page'] = perPage;
 
     return ApiManager.instance.makeApiCall(
       callName: 'products',
@@ -368,6 +372,14 @@ class ProductsCall {
   int? totalRecords(dynamic response) => castToType<int>(getJsonField(
     response,
     r'''$.data.total_records''',
+  ));
+  int? currentPage(dynamic response) => castToType<int>(getJsonField(
+    response,
+    r'''$.pagination.current_page''',
+  ));
+  int? lastPage(dynamic response) => castToType<int>(getJsonField(
+    response,
+    r'''$.pagination.last_page''',
   ));
   List? catData(dynamic response) => getJsonField(
     response,
@@ -429,6 +441,8 @@ class ClearanceProductsCall {
     String? type = '',
     String? search = '',
     String? size = '',
+    int? page,
+    int? perPage,
   }) async {
     final baseUrl = PasargadrugsGroup.getBaseUrl();
 
@@ -444,6 +458,8 @@ class ClearanceProductsCall {
     if (type != null && type.isNotEmpty) params['type'] = type;
     if (search != null && search.isNotEmpty) params['search'] = search;
     if (size != null && size.isNotEmpty) params['size'] = size;
+    if (page != null) params['page'] = page;
+    if (perPage != null) params['per_page'] = perPage;
 
     return ApiManager.instance.makeApiCall(
       callName: 'clearanceProducts',
@@ -467,6 +483,14 @@ class ClearanceProductsCall {
     r'''$.data''',
     true,
   ) as List?;
+  int? currentPage(dynamic response) => castToType<int>(getJsonField(
+    response,
+    r'''$.pagination.current_page''',
+  ));
+  int? lastPage(dynamic response) => castToType<int>(getJsonField(
+    response,
+    r'''$.pagination.last_page''',
+  ));
   String? message(dynamic response) => castToType<String>(getJsonField(
         response,
         r'''$.message''',
@@ -485,6 +509,8 @@ class SaleProductsCall {
     String? type = '',
     String? search = '',
     String? size = '',
+    int? page,
+    int? perPage,
   }) async {
     final baseUrl = PasargadrugsGroup.getBaseUrl();
 
@@ -499,6 +525,8 @@ class SaleProductsCall {
     if (type != null && type.isNotEmpty) params['type'] = type;
     if (search != null && search.isNotEmpty) params['search'] = search;
     if (size != null && size.isNotEmpty) params['size'] = size;
+    if (page != null) params['page'] = page;
+    if (perPage != null) params['per_page'] = perPage;
 
     return ApiManager.instance.makeApiCall(
       callName: 'saleProducts',
@@ -522,6 +550,14 @@ class SaleProductsCall {
     r'''$.data''',
     true,
   ) as List?;
+  int? currentPage(dynamic response) => castToType<int>(getJsonField(
+    response,
+    r'''$.pagination.current_page''',
+  ));
+  int? lastPage(dynamic response) => castToType<int>(getJsonField(
+    response,
+    r'''$.pagination.last_page''',
+  ));
   String? message(dynamic response) => castToType<String>(getJsonField(
     response,
     r'''$.message''',
@@ -674,6 +710,10 @@ class ProductDetailCall {
   int? salePrice(dynamic response) => castToType<int>(getJsonField(
     response,
     r'''$.data.product.sale_price''',
+  ));
+  String? saleRemainingTime(dynamic response) => castToType<String>(getJsonField(
+    response,
+    r'''$.data.product.sale_remaining_time''',
   ));
 }
 

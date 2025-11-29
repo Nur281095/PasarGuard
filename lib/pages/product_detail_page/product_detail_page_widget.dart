@@ -18,9 +18,11 @@ class ProductDetailPageWidget extends StatefulWidget {
   const ProductDetailPageWidget({
     super.key,
     required this.prodID,
+    this.showSaleTimer = false,
   });
 
   final int? prodID;
+  final bool showSaleTimer;
 
   static String routeName = 'ProductDetailPage';
   static String routePath = '/productDetailPage';
@@ -901,46 +903,78 @@ class _ProductDetailPageWidgetState extends State<ProductDetailPageWidget>
                                   final originalPrice = (isSale && saleValue > 0)
                                       ? PriceHelpers.calculateOriginalPrice(currentPrice, saleValue)
                                       : null;
+                                  final saleRemaining = widget.showSaleTimer
+                                      ? PasargadrugsGroup.productDetailCall
+                                          .saleRemainingTime(
+                                          productDetailPageProductDetailResponse
+                                              .jsonBody,
+                                        )
+                                      : null;
+                                  final showRemaining = widget.showSaleTimer &&
+                                      (saleRemaining?.isNotEmpty ?? false);
                                   
-                                  return PriceDisplay(
-                                    currentPrice: currentPrice,
-                                    originalPrice: originalPrice,
-                                    currentPriceStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                      font: GoogleFonts.inter(
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FlutterFlowTheme.of(context)
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      PriceDisplay(
+                                        currentPrice: currentPrice,
+                                        originalPrice: originalPrice,
+                                        currentPriceStyle: FlutterFlowTheme.of(context)
                                             .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                      color: FlutterFlowTheme.of(context).primaryText,
-                                      fontSize: 24.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                                    originalPriceStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                      font: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w500,
-                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .override(
+                                          font: GoogleFonts.inter(
+                                            fontWeight: FontWeight.bold,
+                                            fontStyle: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontStyle,
+                                          ),
+                                          color: FlutterFlowTheme.of(context).primaryText,
+                                          fontSize: 24.0,
+                                          letterSpacing: 0.0,
+                                          fontWeight: FontWeight.bold,
+                                          fontStyle: FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .fontStyle,
+                                        ),
+                                        originalPriceStyle: FlutterFlowTheme.of(context)
                                             .bodyMedium
-                                            .fontStyle,
+                                            .override(
+                                          font: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w500,
+                                            fontStyle: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontStyle,
+                                          ),
+                                          color: FlutterFlowTheme.of(context).secondaryText,
+                                          fontSize: 18.0,
+                                          letterSpacing: 0.0,
+                                          fontWeight: FontWeight.w500,
+                                          fontStyle: FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .fontStyle,
+                                        ),
+                                        spacing: 12.0,
+                                        axis: Axis.horizontal,
                                       ),
-                                      color: FlutterFlowTheme.of(context).secondaryText,
-                                      fontSize: 18.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.w500,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                                    spacing: 12.0,
-                                    axis: Axis.horizontal,
+                                      if (showRemaining)
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 4.0),
+                                          child: Text(
+                                            saleRemaining!,
+                                            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                              font: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w600,
+                                                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                              ),
+                                              color: Colors.red,
+                                              fontSize: 14.0,
+                                              letterSpacing: 0.0,
+                                              fontWeight: FontWeight.w600,
+                                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
                                   );
                                 },
                               ),

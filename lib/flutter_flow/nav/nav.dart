@@ -216,6 +216,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               'prodID',
               ParamType.int,
             ),
+            showSaleTimer: params.getParam(
+                  'showSaleTimer',
+                  ParamType.bool,
+                ) ??
+                false,
           ),
         ),
         FFRoute(
