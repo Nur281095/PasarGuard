@@ -1,0 +1,79 @@
+# =====================
+# OS / Misc
+# =====================
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+*.swo
+
+# =====================
+# Flutter / Dart (generated)
+# =====================
+.dart_tool/
+.packages
+.pub/
+.pub-cache/
+.flutter-plugins
+.flutter-plugins-dependencies
+.metadata
+build/
+coverage/
+
+# If using FVM
+.fvm/
+
+# =====================
+# IDE
+# =====================
+.idea/
+*.iml
+.vscode/
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# =====================
+# Android (generated / local)
+# =====================
+android/.gradle/
+android/app/build/
+android/local.properties
+**/key.properties
+**/*.jks
+**/*.keystore
+
+# =====================
+# iOS / macOS (generated)
+# =====================
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/ephemeral/
+ios/Flutter/Flutter.framework
+ios/Flutter/App.framework
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+
+macos/Pods/
+macos/Flutter/ephemeral/
+macos/Flutter/GeneratedPluginRegistrant.swift
+macos/Flutter/Generated.xcconfig
+macos/Flutter/flutter_export_environment.sh
+
+# Xcode user files
+**/*.xcuserstate
+**/xcuserdata/
+**/DerivedData/
+
+# =====================
+# Web (optional generated)
+# =====================
+build/web/
+
+# =====================
+# Windows / Linux (optional)
+# =====================
+*.exe
+*.dll
+*.so

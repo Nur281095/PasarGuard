@@ -988,7 +988,11 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                                                                         productItem,
                                                                         r'''$.is_sale''',
                                                                       ) !=
-                                                                          null)
+                                                                          null && 
+                                                                          PriceHelpers.parseInt(getJsonField(
+                                                                            productItem,
+                                                                            r'''$.sale_value''',
+                                                                          )) > 0)
                                                                         Align(
                                                                           alignment:
                                                                           AlignmentDirectional(
@@ -1238,18 +1242,21 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                                                                                   child: Builder(
                                                                                     builder: (context) {
                                                                                       if (_isSalePage) {
+                                                                                        // For sale products, use direct prices from API
                                                                                         final salePrice = PriceHelpers.parsePrice(
                                                                                           getJsonField(productItem, r'''$.sale_price'''),
                                                                                         );
-                                                                                        final originalPriceValue = PriceHelpers.parsePrice(
-                                                                                          getJsonField(productItem, r'''$.original_price'''),
+                                                                                        final originalPrice = PriceHelpers.parsePrice(
+                                                                                          getJsonField(productItem, r'''$.price'''),
                                                                                         );
-                                                                                        final comparePrice = originalPriceValue > 0 ? originalPriceValue : null;
-                                                                                        final displayPrice = salePrice > 0 ? salePrice : originalPriceValue;
+                                                                                        
+                                                                                        // Show sale_price in bold, price with strikethrough
+                                                                                        // If sale_price exists and is greater than 0, show both prices
+                                                                                        final showOriginalPrice = salePrice > 0 && originalPrice > salePrice;
 
                                                                                         return PriceDisplay(
-                                                                                          currentPrice: comparePrice ?? displayPrice,
-                                                                                          originalPrice: comparePrice != null ? displayPrice : null,
+                                                                                          currentPrice: showOriginalPrice ? originalPrice : (salePrice > 0 ? salePrice : originalPrice),
+                                                                                          originalPrice: showOriginalPrice ? salePrice : null,
                                                                                           currentPriceStyle: FlutterFlowTheme.of(context).bodyMedium.override(
                                                                                             font: GoogleFonts.inter(
                                                                                               fontWeight: FontWeight.w600,
@@ -1272,11 +1279,12 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                                                                                             fontWeight: FontWeight.w400,
                                                                                             fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
                                                                                           ),
-                                                                                          spacing: 6.0,
+                                                                                          spacing: 4.0,
                                                                                           axis: Axis.vertical,
                                                                                         );
                                                                                       }
 
+                                                                                      // For regular products, use PriceHelpers
                                                                                       final currentPrice = PriceHelpers.parsePrice(
                                                                                         getJsonField(productItem, r'''$.price'''),
                                                                                       );
@@ -1318,7 +1326,7 @@ class _CategoriesItemsPageWidgetState extends State<CategoriesItemsPageWidget>
                                                                                           fontWeight: FontWeight.w400,
                                                                                           fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
                                                                                         ),
-                                                                                        spacing: 6.0,
+                                                                                        spacing: 4.0,
                                                                                         axis: Axis.vertical,
                                                                                       );
                                                                                     },

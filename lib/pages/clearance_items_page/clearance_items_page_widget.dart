@@ -689,7 +689,11 @@ class _ClearanceItemsPageWidgetState extends State<ClearanceItemsPageWidget>
                                                                           productItem,
                                                                           r'''$.is_sale''',
                                                                         ) !=
-                                                                            null)
+                                                                            null && 
+                                                                            PriceHelpers.parseInt(getJsonField(
+                                                                              productItem,
+                                                                              r'''$.sale_value''',
+                                                                            )) > 0)
                                                                           Align(
                                                                             alignment:
                                                                             AlignmentDirectional(
@@ -938,40 +942,21 @@ class _ClearanceItemsPageWidgetState extends State<ClearanceItemsPageWidget>
                                                                                         1.0),
                                                                                     child: Builder(
                                                                                       builder: (context) {
-                                                                                        final clearancePrice = PriceHelpers.parsePrice(
-                                                                                          getJsonField(productItem, r'''$.clearance_price'''),
-                                                                                        );
+                                                                                        // For clearance products, use direct prices from API
                                                                                         final salePrice = PriceHelpers.parsePrice(
                                                                                           getJsonField(productItem, r'''$.sale_price'''),
                                                                                         );
-                                                                                        final regularPrice = PriceHelpers.parsePrice(
+                                                                                        final originalPrice = PriceHelpers.parsePrice(
                                                                                           getJsonField(productItem, r'''$.price'''),
                                                                                         );
-
-                                                                                        double displayPrice = clearancePrice > 0
-                                                                                            ? clearancePrice
-                                                                                            : (salePrice > 0 ? salePrice : regularPrice);
-
-                                                                                        final isSale = PriceHelpers.isOnSale(
-                                                                                          getJsonField(productItem, r'''$.is_sale'''),
-                                                                                        );
-
-                                                                                        final saleValue = PriceHelpers.parseInt(
-                                                                                          getJsonField(productItem, r'''$.sale_value'''),
-                                                                                        ).toDouble();
-
-                                                                                        double? comparePrice;
-                                                                                        if (clearancePrice > 0 && regularPrice > 0) {
-                                                                                          comparePrice = regularPrice;
-                                                                                        } else if (isSale && saleValue > 0) {
-                                                                                          final basePrice = regularPrice > 0 ? regularPrice : displayPrice;
-                                                                                          comparePrice = basePrice;
-                                                                                          displayPrice = PriceHelpers.calculateOriginalPrice(basePrice, saleValue);
-                                                                                        }
+                                                                                        
+                                                                                        // Show sale_price in bold, price with strikethrough
+                                                                                        // If sale_price exists and is greater than 0, show both prices
+                                                                                        final showOriginalPrice = salePrice > 0 && originalPrice > salePrice;
 
                                                                                         return PriceDisplay(
-                                                                                          currentPrice: comparePrice ?? displayPrice,
-                                                                                          originalPrice: comparePrice != null ? displayPrice : null,
+                                                                                          currentPrice: showOriginalPrice ? originalPrice : (salePrice > 0 ? salePrice : originalPrice),
+                                                                                          originalPrice: showOriginalPrice ? salePrice : null,
                                                                                           currentPriceStyle: FlutterFlowTheme.of(context).bodyMedium.override(
                                                                                             font: GoogleFonts.inter(
                                                                                               fontWeight: FontWeight.w600,
@@ -994,7 +979,7 @@ class _ClearanceItemsPageWidgetState extends State<ClearanceItemsPageWidget>
                                                                                             fontWeight: FontWeight.w400,
                                                                                             fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
                                                                                           ),
-                                                                                          spacing: 6.0,
+                                                                                          spacing: 4.0,
                                                                                           axis: Axis.vertical,
                                                                                         );
                                                                                       },

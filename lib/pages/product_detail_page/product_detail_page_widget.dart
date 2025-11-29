@@ -888,8 +888,13 @@ class _ProductDetailPageWidgetState extends State<ProductDetailPageWidget>
                                     productDetailPageProductDetailResponse.jsonBody,
                                   );
                                   
-                                  final currentPrice = PriceHelpers.parsePrice(
+                                  // Parse all price fields from API
+                                  final regularPrice = PriceHelpers.parsePrice(
                                     getJsonField(product, r'''$.price'''),
+                                  );
+                                  
+                                  final apiSalePrice = PriceHelpers.parsePrice(
+                                    getJsonField(product, r'''$.sale_price'''),
                                   );
                                   
                                   final isSale = PriceHelpers.isOnSale(
@@ -900,9 +905,26 @@ class _ProductDetailPageWidgetState extends State<ProductDetailPageWidget>
                                     getJsonField(product, r'''$.sale_value'''),
                                   ).toDouble();
                                   
-                                  final originalPrice = (isSale && saleValue > 0)
-                                      ? PriceHelpers.calculateOriginalPrice(currentPrice, saleValue)
-                                      : null;
+                                  // Determine display prices based on available data
+                                  double displayPrice;
+                                  double? originalPriceValue;
+                                  
+                                  // Priority 1: If sale_price exists and is valid (for clearance/sale products)
+                                  if (apiSalePrice > 0 && regularPrice > apiSalePrice) {
+                                    displayPrice = regularPrice;  // Original price
+                                    originalPriceValue = apiSalePrice;  // Sale price (discounted)
+                                  }
+                                  // Priority 2: If is_sale flag is set with sale_value (for regular sale products)
+                                  else if (isSale && saleValue > 0) {
+                                    displayPrice = regularPrice;  // Original price
+                                    originalPriceValue = PriceHelpers.calculateOriginalPrice(regularPrice, saleValue);
+                                  }
+                                  // Priority 3: No sale, show regular price only
+                                  else {
+                                    displayPrice = regularPrice;
+                                    originalPriceValue = null;
+                                  }
+                                  
                                   final saleRemaining = widget.showSaleTimer
                                       ? PasargadrugsGroup.productDetailCall
                                           .saleRemainingTime(
@@ -914,11 +936,12 @@ class _ProductDetailPageWidgetState extends State<ProductDetailPageWidget>
                                       (saleRemaining?.isNotEmpty ?? false);
                                   
                                   return Column(
+                                    mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       PriceDisplay(
-                                        currentPrice: currentPrice,
-                                        originalPrice: originalPrice,
+                                        currentPrice: displayPrice,
+                                        originalPrice: originalPriceValue,
                                         currentPriceStyle: FlutterFlowTheme.of(context)
                                             .bodyMedium
                                             .override(
@@ -953,8 +976,8 @@ class _ProductDetailPageWidgetState extends State<ProductDetailPageWidget>
                                               .bodyMedium
                                               .fontStyle,
                                         ),
-                                        spacing: 12.0,
-                                        axis: Axis.horizontal,
+                                        spacing: 4.0,
+                                        axis: Axis.vertical,
                                       ),
                                       if (showRemaining)
                                         Padding(
