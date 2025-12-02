@@ -1,6 +1,0 @@
-framework module square_in_app_payments {
-  umbrella header "square_in_app_payments-umbrella.h"
-
-  export *
-  module * { export * }
-}

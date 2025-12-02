@@ -1,0 +1,1 @@
+ /Users/Apple/Desktop/Personal/PasargadrugsIOS/.dart_tool/flutter_build/69c6a5ceba3eb9ee676040aa42ac0476/native_assets.json: 

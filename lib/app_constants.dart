@@ -9,9 +9,15 @@ abstract class FFAppConstants {
   // static const String SquareAppID = 'sandbox-sq0idb-kImYDmSyTf6Vr5T3XAZr3w';
 
   //==========PROD===============
+
+  // SQUARE_LOCATION_ID=0J86Y00YCE981
+
+  // static const String SquareAccessToken =
+  //     'EAAAlzWZzd_IAhWXQ95__mD1xSl3_4KjbRupnpBe2z8KOew0WhEziLfS54s7-2If';
+  // static const String SquareAppID = 'sq0idp-mO-6zxcVUKmgBsIpA6JqbA';
   static const String SquareAccessToken =
-      'EAAAlzWZzd_IAhWXQ95__mD1xSl3_4KjbRupnpBe2z8KOew0WhEziLfS54s7-2If';
-  static const String SquareAppID = 'sq0idp-mO-6zxcVUKmgBsIpA6JqbA';
+      'EAAAlgD3Nox_pwleF7CONE5VxOUe6fKSBO0mykQoGlQnSsE1VM4sH24ALJZ09x9I';
+  static const String SquareAppID = 'sq0idp-yexA4aWqOeSSWv6P4H4aSQ';
   static Map<String, DebugDataField> toDebugSerializableMap() => {
     'SquareAccessToken': debugSerializeParam(
       SquareAccessToken,
